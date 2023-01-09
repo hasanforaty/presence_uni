@@ -22,7 +22,6 @@ class LoginPage extends StatelessWidget {
               Lottie.asset("assets/lottie/login_lottie_01.json",
                   repeat: true,
                   fit: BoxFit.fill,
-                  height: MediaQuery.of(context).size.width,
                   width: MediaQuery.of(context).size.width),
               Padding(
                 padding: textPadding,
@@ -48,14 +47,12 @@ class LoginPage extends StatelessWidget {
                         style: Theme.of(context).textTheme.caption?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 18,
                             ),
                       ),
                       hintText: "نام کاربری خود را وارد نمایید",
-                      hintStyle: Theme.of(context)
-                          .textTheme
-                          .caption
-                          ?.copyWith(color: kUnderLineColor),
+                      hintStyle: Theme.of(context).textTheme.caption?.copyWith(
+                          color: kUnderLineColor, fontSize: 16, height: 3),
                       enabledBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(
                           color: kUnderLineColor,

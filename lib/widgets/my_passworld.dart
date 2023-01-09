@@ -18,17 +18,18 @@ class _MyPasswordWidgetState extends State<MyPasswordWidget> {
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         label: Text(
-          "رمز",
+          "رمز عبور ",
           style: Theme.of(context).textTheme.caption?.copyWith(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
         ),
         hintText: "رمز ورود خود را وارد نمایید",
-        hintStyle: Theme.of(context).textTheme.caption?.copyWith(
-              color: kUnderLineColor,
-            ),
+        hintStyle: Theme.of(context)
+            .textTheme
+            .caption
+            ?.copyWith(color: kUnderLineColor, fontSize: 16, height: 3),
         enabledBorder: const UnderlineInputBorder(
           borderSide: BorderSide(
             color: kUnderLineColor,
