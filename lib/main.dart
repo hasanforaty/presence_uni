@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/routes/log_in_page.dart';
 
 void main() {
@@ -14,6 +15,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
+      onGenerateRoute: RouteGenerator.generateRoute,
+      initialRoute: RouteGenerator.login,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -27,7 +30,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: "vazir",
       ),
-      home: const Scaffold(body: LoginPage()),
     );
   }
 }
