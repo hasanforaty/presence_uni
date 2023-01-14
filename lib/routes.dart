@@ -18,4 +18,22 @@ class RouteGenerator {
         }
     }
   }
+
+  static void goTo(BuildContext context, Routes route) {
+    String myRoute;
+    switch (route) {
+      case Routes.logIn:
+        myRoute = RouteGenerator.login;
+        break;
+      case Routes.attendance:
+        myRoute = RouteGenerator.attendance;
+        break;
+    }
+    Navigator.pushNamed(context, myRoute);
+  }
+}
+
+enum Routes {
+  logIn,
+  attendance;
 }

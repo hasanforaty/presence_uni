@@ -5,6 +5,7 @@ import 'package:get/route_manager.dart';
 import 'package:lottie/lottie.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/consts/consts.dart';
+import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/widgets/my_passworld.dart';
 
 class LoginPage extends StatelessWidget {
@@ -87,7 +88,7 @@ class LoginPage extends StatelessWidget {
                     //TODO put check right answer
                     //TODO log in
                     // TODO if log in go to next Page
-                    Get.to("");
+                    RouteGenerator.goTo(context, Routes.attendance);
                   },
                   child: Container(
                     height: 50,
