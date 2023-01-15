@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class CustomSliverAppBar extends SliverPersistentHeaderDelegate {
   double expandedHeight;
@@ -6,13 +7,19 @@ class CustomSliverAppBar extends SliverPersistentHeaderDelegate {
   Widget? appBar;
   Widget? sortWidget;
   double sortWidgetSize;
+  Future<void> Function()? onStretch;
   CustomSliverAppBar({
     required this.expandedHeight,
     this.background,
     this.appBar,
     this.sortWidget,
     this.sortWidgetSize = 60,
+    this.onStretch,
   });
+
+  @override
+  OverScrollHeaderStretchConfiguration get stretchConfiguration =>
+      OverScrollHeaderStretchConfiguration(onStretchTrigger: onStretch);
 
   @override
   Widget build(

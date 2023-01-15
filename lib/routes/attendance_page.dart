@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/widgets/CustomSliverAppBar.dart';
@@ -46,6 +47,9 @@ class _MyAppBarSliver_1 extends StatelessWidget {
       floating: true,
       delegate: CustomSliverAppBar(
         expandedHeight: 200,
+        onStretch: () async {
+          //TODO refresh the list.
+        },
         background: DecoratedBox(
           position: DecorationPosition.background,
           decoration: const BoxDecoration(
@@ -82,29 +86,66 @@ class _MyAppBarSliver_1 extends StatelessWidget {
                 )
               ]),
           height: 60,
-          child: Row(
-            children: [
-              Expanded(
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.sort_by_alpha_outlined),
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.format_list_numbered_outlined),
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.filter_alt),
-                ),
-              ),
-            ],
+          child: const SortWidgets(),
+        ),
+      ),
+    );
+  }
+}
+
+class SortWidgets extends StatelessWidget {
+  const SortWidgets({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: IconButton(
+            onPressed: () {},
+            icon: const FaIcon(FontAwesomeIcons.arrowUpAZ),
           ),
         ),
+        Expanded(
+          child: MyIconButton(
+            onPressed: () {},
+            iconData: (FontAwesomeIcons.arrowUp19),
+          ),
+        ),
+        Expanded(
+          child: IconButton(
+            splashColor: kLogInBackGround,
+            onPressed: () {},
+            icon: const FaIcon(FontAwesomeIcons.filter),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class MyIconButton extends StatelessWidget {
+  final void Function() onPressed;
+  final IconData iconData;
+  final bool isActive;
+  const MyIconButton(
+      {Key? key,
+      required this.onPressed,
+      required this.iconData,
+      this.isActive = true})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: (isActive) ? onPressed : () {},
+      style: ElevatedButton.styleFrom(
+        primary: Colors.transparent,
+        elevation: 0,
+      ),
+      child: FaIcon(
+        iconData,
+        color: (isActive) ? Colors.black : Colors.grey,
       ),
     );
   }
