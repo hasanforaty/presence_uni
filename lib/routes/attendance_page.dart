@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -61,8 +63,17 @@ class _MyAppBarSliver_1 extends StatelessWidget {
             fit: BoxFit.fill,
           ),
         ),
+        //15.5
         appBar: AppBar(
           backgroundColor: kLogInBackGround.withOpacity(0.5),
+          flexibleSpace: ClipRRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                color: Colors.transparent,
+              ),
+            ),
+          ),
           title: Text(
             "حضور و غیاب",
             style: Theme.of(context)
