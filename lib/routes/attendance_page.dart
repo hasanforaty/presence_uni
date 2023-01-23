@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/widgets/CustomSliverAppBar.dart';
 import 'package:presence_absence/widgets/attendacne_item.dart';
+import 'package:presence_absence/widgets/filter_dialog.dart';
 
 class AttendancePage extends StatelessWidget {
   const AttendancePage({Key? key}) : super(key: key);
@@ -112,9 +113,9 @@ class SortWidgets extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: IconButton(
+          child: MyIconButton(
             onPressed: () {},
-            icon: const FaIcon(FontAwesomeIcons.arrowUpAZ),
+            iconData: FontAwesomeIcons.arrowUpAZ,
           ),
         ),
         Expanded(
@@ -124,10 +125,11 @@ class SortWidgets extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: IconButton(
-            splashColor: kLogInBackGround,
-            onPressed: () {},
-            icon: const FaIcon(FontAwesomeIcons.filter),
+          child: MyIconButton(
+            onPressed: () {
+              showFilter(context);
+            },
+            iconData: FontAwesomeIcons.filter,
           ),
         ),
       ],
