@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:presence_absence/consts/Colors.dart';
+import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/widgets/CustomSliverAppBar.dart';
 import 'package:presence_absence/widgets/attendacne_item.dart';
 import 'package:presence_absence/widgets/filter_dialog.dart';
@@ -28,6 +29,9 @@ class AttendancePage extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: AttendanceItem(
                     attendanceNumber: (index + 5000).toString(),
+                    onClicked: () {
+                      RouteGenerator.goTo(context, Routes.session);
+                    },
                   ),
                 );
               },
