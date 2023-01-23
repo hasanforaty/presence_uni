@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/widgets/CustomSliverAppBar.dart';
+import 'package:presence_absence/widgets/attendacne_item.dart';
 
 class AttendancePage extends StatelessWidget {
   const AttendancePage({Key? key}) : super(key: key);
@@ -24,9 +25,8 @@ class AttendancePage extends StatelessWidget {
               (context, index) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    color: Colors.red,
-                    height: 100,
+                  child: AttendanceItem(
+                    attendanceNumber: (index + 5000).toString(),
                   ),
                 );
               },
