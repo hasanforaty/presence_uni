@@ -16,16 +16,20 @@ class _MyPasswordWidgetState extends State<MyPasswordWidget> {
     return TextField(
       obscureText: isObscure,
       style: const TextStyle(color: Colors.white),
+      textDirection: TextDirection.rtl,
       decoration: InputDecoration(
-        label: Text(
-          "رمز عبور ",
-          style: Theme.of(context).textTheme.caption?.copyWith(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+        label: Center(
+          child: Text(
+            "رمز عبور ",
+            style: Theme.of(context).textTheme.caption?.copyWith(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
         ),
         hintText: "رمز ورود خود را وارد نمایید",
+        hintTextDirection: TextDirection.rtl,
         hintStyle: Theme.of(context)
             .textTheme
             .caption

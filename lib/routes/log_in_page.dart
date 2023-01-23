@@ -32,6 +32,7 @@ class LoginPage extends StatelessWidget {
                   padding: textPadding,
                   child: Text(
                     "ورود",
+                    textDirection: TextDirection.rtl,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -46,16 +47,22 @@ class LoginPage extends StatelessWidget {
                     width: MediaQuery.of(context).size.width,
                     child: TextField(
                       style: const TextStyle(color: Colors.white),
+                      textDirection: TextDirection.rtl,
                       decoration: InputDecoration(
-                        label: Text(
-                          "نام کاربری",
-                          style: Theme.of(context).textTheme.caption?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
+                        label: Center(
+                          child: Text(
+                            "نام کاربری",
+                            textDirection: TextDirection.rtl,
+                            style:
+                                Theme.of(context).textTheme.caption?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                          ),
                         ),
                         hintText: "نام کاربری خود را وارد نمایید",
+                        hintTextDirection: TextDirection.rtl,
                         hintStyle: Theme.of(context)
                             .textTheme
                             .caption
