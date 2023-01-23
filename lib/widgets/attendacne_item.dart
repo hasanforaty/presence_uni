@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 class AttendanceItem extends StatelessWidget {
   final String attendanceNumber;
   final String teacherName;
+  final String className;
   const AttendanceItem(
-      {Key? key, required this.attendanceNumber, this.teacherName = "باقری"})
+      {Key? key,
+      required this.attendanceNumber,
+      this.teacherName = "باقری",
+      this.className = "مهارت های زندگی"})
       : super(key: key);
 
   @override
@@ -60,7 +64,12 @@ class AttendanceItem extends StatelessWidget {
                           .labelLarge
                           ?.copyWith(fontSize: 16),
                     ),
-                    Expanded(child: Container()),
+                    Expanded(
+                        child: Center(
+                            child: Text(
+                      "کلاس : $className",
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ))),
                   ],
                 ),
               ),
