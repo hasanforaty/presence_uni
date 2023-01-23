@@ -16,7 +16,7 @@ class AttendanceItem extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [Color(0xffee9ca7), Color(0xffffdde1)],
+              colors: [Color(0xff8360c3), Color(0xff2ebf91)],
             ),
             borderRadius: BorderRadius.all(
               Radius.circular(16),
@@ -24,8 +24,8 @@ class AttendanceItem extends StatelessWidget {
             boxShadow: [
               BoxShadow(
                 offset: Offset(2, 10),
-                color: Color(0xff878787),
-                blurRadius: 10,
+                color: Colors.black87,
+                blurRadius: 12,
               ),
             ]),
         height: 100,
