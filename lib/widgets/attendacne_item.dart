@@ -4,14 +4,16 @@ class AttendanceItem extends StatelessWidget {
   final String attendanceNumber;
   final String teacherName;
   final String className;
+  final String uniName;
   final void Function() onClicked;
-  const AttendanceItem(
-      {Key? key,
-      required this.attendanceNumber,
-      required this.onClicked,
-      this.teacherName = "باقری",
-      this.className = "مهارت های زندگی"})
-      : super(key: key);
+  const AttendanceItem({
+    Key? key,
+    required this.attendanceNumber,
+    required this.onClicked,
+    this.teacherName = "باقری",
+    this.className = "مهارت های زندگی",
+    this.uniName = "دانشکده مهارت",
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +74,12 @@ class AttendanceItem extends StatelessWidget {
                           child: Center(
                               child: Text(
                         "کلاس : $className",
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ))),
+                      Expanded(
+                          child: Center(
+                              child: Text(
+                        uniName,
                         style: Theme.of(context).textTheme.labelLarge,
                       ))),
                     ],
