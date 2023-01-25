@@ -10,9 +10,9 @@ class AttendanceItem extends StatelessWidget {
     Key? key,
     required this.attendanceNumber,
     required this.onClicked,
-    this.teacherName = "باقری",
-    this.className = "مهارت های زندگی",
-    this.uniName = "دانشکده مهارت",
+    required this.teacherName,
+    required this.className,
+    required this.uniName,
   }) : super(key: key);
 
   @override

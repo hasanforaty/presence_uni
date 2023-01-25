@@ -1,9 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
+import 'package:presence_absence/bloc/attendance_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
+import 'package:presence_absence/models/Attendacne.dart';
 import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/widgets/CustomSliverAppBar.dart';
 import 'package:presence_absence/widgets/attendacne_item.dart';
@@ -15,29 +18,41 @@ class AttendancePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        color: kLogInBackGround,
-        child: CustomScrollView(
-          slivers: [
-            const _MyAppBarSliver_1(),
-            SliverList(
-                delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: AttendanceItem(
-                    attendanceNumber: (index + 5000).toString(),
-                    onClicked: () {
-                      RouteGenerator.goTo(context, Routes.session);
-                    },
-                  ),
-                );
-              },
-              childCount: 200,
-            ))
-          ],
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider<AttendacneRepo>(create: (_) => AttendacneRepo()),
+        ],
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          color: kLogInBackGround,
+          child: CustomScrollView(
+            slivers: [
+              const _MyAppBarSliver_1(),
+              BlocBuilder<AttendacneRepo, List<Attendance>>(
+                  builder: (context, items) {
+                return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    var item = items[index];
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AttendanceItem(
+                        attendanceNumber: item.classNumber,
+                        className: item.className,
+                        teacherName: item.teacherName,
+                        uniName: item.uniName,
+                        onClicked: () {
+                          RouteGenerator.goTo(context, Routes.session);
+                        },
+                      ),
+                    );
+                  },
+                  childCount: items.length,
+                ));
+              })
+            ],
+          ),
         ),
       ),
     );
