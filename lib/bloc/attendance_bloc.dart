@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:presence_absence/models/Attendacne.dart';
+import 'package:presence_absence/models/attendacne.dart';
 
 class AttendacneRepo extends Cubit<List<Attendance>> {
   AttendacneRepo()

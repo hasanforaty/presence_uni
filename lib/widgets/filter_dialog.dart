@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:presence_absence/bloc/attendacne_filter_bloc.dart';
 
 Future showFilter(BuildContext context) =>
-    showDialog(context: context, builder: (_) => const FilterDialog());
+    showDialog(context: context, builder: (_) => FilterDialog(context));
 
 class FilterDialog extends StatelessWidget {
-  const FilterDialog({Key? key}) : super(key: key);
+  final BuildContext buildContext;
+  const FilterDialog(this.buildContext, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var lastFilter = buildContext.read<AttendanceFilterBloc>().state.filter;
     return AlertDialog(
       title: const Center(
         child: Text(
@@ -20,13 +25,14 @@ class FilterDialog extends StatelessWidget {
         ActionChip(
           label: const Text("لغو"),
           onPressed: () {
+            buildContext.read<AttendanceFilterBloc>().changeFilter(lastFilter);
             Navigator.pop(context);
           },
         ),
         ActionChip(
           label: const Text("اعمال"),
           onPressed: () {
-            //TODO apply Filter chosen
+            Navigator.pop(context);
           },
         ),
       ],

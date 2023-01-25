@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
+import 'package:presence_absence/bloc/attendacne_filter_bloc.dart';
 import 'package:presence_absence/bloc/attendance_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
-import 'package:presence_absence/models/Attendacne.dart';
+import 'package:presence_absence/models/attendacne.dart';
+import 'package:presence_absence/models/attendanceFilter.dart';
 import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/widgets/CustomSliverAppBar.dart';
 import 'package:presence_absence/widgets/attendacne_item.dart';
@@ -21,6 +23,8 @@ class AttendancePage extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider<AttendacneRepo>(create: (_) => AttendacneRepo()),
+          BlocProvider<AttendanceFilterBloc>(
+              create: (_) => AttendanceFilterBloc()),
         ],
         child: Container(
           height: MediaQuery.of(context).size.height,
@@ -31,25 +35,31 @@ class AttendancePage extends StatelessWidget {
               const _MyAppBarSliver_1(),
               BlocBuilder<AttendacneRepo, List<Attendance>>(
                   builder: (context, items) {
-                return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    var item = items[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: AttendanceItem(
-                        attendanceNumber: item.classNumber,
-                        className: item.className,
-                        teacherName: item.teacherName,
-                        uniName: item.uniName,
-                        onClicked: () {
-                          RouteGenerator.goTo(context, Routes.session);
-                        },
-                      ),
-                    );
-                  },
-                  childCount: items.length,
-                ));
+                return BlocBuilder<AttendanceFilterBloc, AttendanceFilter>(
+                    builder: (context, filter) {
+                  var list = items
+                    ..where(filter.filter)
+                    ..sort(Attendance.sort(filter.sort));
+                  return SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      var item = list[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: AttendanceItem(
+                          attendanceNumber: item.classNumber,
+                          className: item.className,
+                          teacherName: item.teacherName,
+                          uniName: item.uniName,
+                          onClicked: () {
+                            RouteGenerator.goTo(context, Routes.session);
+                          },
+                        ),
+                      );
+                    },
+                    childCount: list.length,
+                  ));
+                });
               })
             ],
           ),
@@ -133,14 +143,22 @@ class SortWidgets extends StatelessWidget {
       children: [
         Expanded(
           child: MyIconButton(
-            onPressed: () {},
+            onPressed: () {
+              context
+                  .read<AttendanceFilterBloc>()
+                  .changeSort(SortAttendance.sortByNumber);
+            },
             iconData: FontAwesomeIcons.arrowUpAZ,
           ),
         ),
         Expanded(
           child: MyIconButton(
-            onPressed: () {},
-            iconData: (FontAwesomeIcons.arrowUp19),
+            onPressed: () {
+              context
+                  .read<AttendanceFilterBloc>()
+                  .changeSort(SortAttendance.sortByReverseNumber);
+            },
+            iconData: (FontAwesomeIcons.arrowDownAZ),
           ),
         ),
         Expanded(
