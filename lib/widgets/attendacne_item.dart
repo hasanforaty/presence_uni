@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:presence_absence/widgets/class_number_widget.dart';
 
 class AttendanceItem extends StatelessWidget {
   final String attendanceNumber;
@@ -44,13 +45,7 @@ class AttendanceItem extends StatelessWidget {
               const SizedBox(
                 width: 16,
               ),
-              Text(
-                attendanceNumber,
-                style: Theme.of(context)
-                    .textTheme
-                    .labelLarge
-                    ?.copyWith(color: Colors.white, fontSize: 40),
-              ),
+              ClassNumberWidget(classNumber: attendanceNumber),
               const SizedBox(
                 width: 16,
               ),
