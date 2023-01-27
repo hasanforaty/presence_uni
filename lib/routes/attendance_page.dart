@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:presence_absence/bloc/attendacne_filter_bloc.dart';
 import 'package:presence_absence/bloc/attendances_bloc.dart';
+import 'package:presence_absence/bloc/selected_attendance_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/models/attendacne.dart';
 import 'package:presence_absence/models/attendanceFilter.dart';
@@ -52,6 +53,7 @@ class AttendancePage extends StatelessWidget {
                           teacherName: item.teacherName,
                           uniName: item.uniName,
                           onClicked: () {
+                            context.read<SelectedAttendanceBloc>().setNew(item);
                             RouteGenerator.goTo(context, Routes.session);
                           },
                         ),

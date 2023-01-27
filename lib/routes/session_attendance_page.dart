@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:presence_absence/bloc/selected_attendance_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
+import 'package:presence_absence/models/attendacne.dart';
 
 import 'package:presence_absence/widgets/class_number_widget.dart';
 
@@ -40,30 +42,38 @@ class _SessionPageState extends State<SessionPage> {
             padding: const EdgeInsets.all(16),
             child: Directionality(
               textDirection: TextDirection.rtl,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const _Header(),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Expanded(
-                      child: _SessionBody(
-                    controller: textController,
-                  )),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  _SessionBottom(
-                    onClicked: (isAttended) {
-                      //TODO check for Text Controller
-                      //TODO send respond to Server
-                    },
-                  ),
-                ],
-              ),
+              child: BlocBuilder<SelectedAttendanceBloc, Attendance?>(
+                  builder: (context, item) {
+                if (item == null) {
+                  Navigator.pop(context);
+                }
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _Header(
+                      attendance: item!,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Expanded(
+                        child: _SessionBody(
+                      controller: textController,
+                    )),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    _SessionBottom(
+                      onClicked: (isAttended) {
+                        //TODO check for Text Controller
+                        //TODO send respond to Server
+                      },
+                    ),
+                  ],
+                );
+              }),
             ),
           ),
         ),
@@ -171,7 +181,8 @@ class _SessionBody extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({Key? key}) : super(key: key);
+  final Attendance attendance;
+  const _Header({Key? key, required this.attendance}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -184,17 +195,18 @@ class _Header extends StatelessWidget {
       ),
       child: IntrinsicHeight(
         child: Row(
-          children: const [
-            _ClassNumberWidget(classNumber: "5000"),
-            VerticalDivider(
+          children: [
+            _ClassNumberWidget(classNumber: attendance.classNumber),
+            const VerticalDivider(
               color: Colors.black87,
               indent: 16,
               endIndent: 16,
             ),
             Expanded(
                 child: _HeaderInfo(
-                    className: "مهارت های زندگی", teacherName: "کارگر")),
-            _StudentNumber(number: "25")
+                    className: attendance.className,
+                    teacherName: attendance.teacherName)),
+            _StudentNumber(number: attendance.numberOfStudent),
           ],
         ),
       ),

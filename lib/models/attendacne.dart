@@ -3,11 +3,15 @@ class Attendance {
   final String teacherName;
   final String className;
   final String uniName;
+  final String sessionId;
+  final String numberOfStudent;
   const Attendance(
       {required this.className,
       required this.classNumber,
       required this.teacherName,
-      required this.uniName})
+      required this.uniName,
+      required this.numberOfStudent,
+      required this.sessionId})
       : super();
   Attendance.def(
     String? classNu,
@@ -15,7 +19,9 @@ class Attendance {
             classNumber: classNu ?? "500",
             teacherName: "کارگر",
             className: "مهارت های زندگی",
-            uniName: "دانشکده مهارت");
+            uniName: "دانشکده مهارت",
+            sessionId: "10",
+            numberOfStudent: "25");
 
   static int Function(Attendance, Attendance) sort(
       SortAttendance sortAttendance) {
