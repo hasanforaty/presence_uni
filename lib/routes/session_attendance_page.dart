@@ -1,10 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:presence_absence/consts/Colors.dart';
 
 import 'package:presence_absence/widgets/class_number_widget.dart';
 
-class SessionPage extends StatelessWidget {
+final _pageMainColor = Colors.white.withOpacity(0.6);
+const _pageRadius = Radius.circular(16);
+
+class SessionPage extends StatefulWidget {
   const SessionPage({Key? key}) : super(key: key);
+
+  @override
+  State<SessionPage> createState() => _SessionPageState();
+}
+
+class _SessionPageState extends State<SessionPage> {
+  late TextEditingController textController;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    textController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +44,127 @@ class SessionPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: const [_Header()],
+                children: [
+                  const _Header(),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Expanded(
+                      child: _SessionBody(
+                    controller: textController,
+                  )),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  _SessionBottom(
+                    onClicked: (isAttended) {
+                      //TODO check for Text Controller
+                      //TODO send respond to Server
+                    },
+                  ),
+                ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _SessionBottom extends StatelessWidget {
+  final void Function(bool) onClicked;
+  const _SessionBottom({Key? key, required this.onClicked}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      decoration: BoxDecoration(
+        color: _pageMainColor,
+        borderRadius: const BorderRadius.only(
+            topLeft: _pageRadius, topRight: _pageRadius),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+              child: TextButton(
+            onPressed: () => onClicked(true),
+            child: Text(
+              "حضور",
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(color: Colors.white),
+            ),
+          )),
+          const VerticalDivider(
+            width: 8,
+            thickness: 1,
+            indent: 16,
+            endIndent: 16,
+          ),
+          Expanded(
+              child: TextButton(
+            onPressed: () => onClicked(false),
+            child: Text(
+              "غایب",
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(color: Colors.white),
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+class _SessionBody extends StatelessWidget {
+  final TextEditingController controller;
+  const _SessionBody({Key? key, required this.controller}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: _pageMainColor,
+        borderRadius: const BorderRadius.only(
+            topRight: _pageRadius, topLeft: _pageRadius),
+      ),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "توضیحات:",
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  decoration: TextDecoration.underline,
+                ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: "انتخابی",
+                hintStyle: Theme.of(context).textTheme.titleLarge,
+                fillColor: const Color(0xfff2eecb),
+                filled: true,
+              ),
+              clipBehavior: Clip.antiAlias,
+              expands: true,
+              maxLines: null,
+              minLines: null,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          )
+        ],
       ),
     );
   }
@@ -40,8 +179,8 @@ class _Header extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
-        color: Colors.white.withOpacity(0.6),
+            bottomLeft: _pageRadius, bottomRight: _pageRadius),
+        color: _pageMainColor,
       ),
       child: IntrinsicHeight(
         child: Row(
