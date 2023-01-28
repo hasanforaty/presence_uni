@@ -38,8 +38,7 @@ class AttendancePage extends StatelessWidget {
                   builder: (context, items) {
                 return BlocBuilder<AttendanceFilterBloc, AttendanceFilter>(
                     builder: (context, filter) {
-                  var list = items
-                    ..where(filter.filter)
+                  var list = items.where(filter.createFilter()).toList()
                     ..sort(Attendance.sort(filter.sort));
                   return SliverList(
                       delegate: SliverChildBuilderDelegate(

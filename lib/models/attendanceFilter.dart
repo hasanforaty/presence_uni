@@ -1,18 +1,28 @@
 import 'package:presence_absence/models/attendacne.dart';
+import 'package:presence_absence/models/university.dart';
 
 class AttendanceFilter {
   final SortAttendance sort;
-  final bool Function(Attendance) filter;
-  AttendanceFilter({required this.filter, this.sort = SortAttendance.non})
+  final List<University> filteredUniversity;
+  AttendanceFilter(
+      {this.sort = SortAttendance.non, required this.filteredUniversity})
       : super();
+
+  bool Function(Attendance) createFilter() => (item) {
+        if (filteredUniversity.isEmpty) return true;
+        for (University filter in filteredUniversity) {
+          if (filter.name == item.uniName) return true;
+        }
+        return false;
+      };
 
   AttendanceFilter copyWith({
     SortAttendance? sort,
-    bool Function(Attendance)? filter,
+    List<University>? filteredUniversity,
   }) {
     return AttendanceFilter(
       sort: sort ?? this.sort,
-      filter: filter ?? this.filter,
+      filteredUniversity: filteredUniversity ?? this.filteredUniversity,
     );
   }
 }

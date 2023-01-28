@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presence_absence/bloc/attendacne_filter_bloc.dart';
+import 'package:presence_absence/models/university.dart';
 
-Future showFilter(BuildContext context) =>
-    showDialog(context: context, builder: (_) => FilterDialog(context));
+Future showFilter(BuildContext context) => showDialog(
+    context: context, builder: (_) => FilterDialog(buildContext: context));
 
-class FilterDialog extends StatelessWidget {
+class FilterDialog extends StatefulWidget {
   final BuildContext buildContext;
-  const FilterDialog(this.buildContext, {Key? key}) : super(key: key);
+  const FilterDialog({Key? key, required this.buildContext}) : super(key: key);
+
+  @override
+  State<FilterDialog> createState() => _FilterDialogState();
+}
+
+class _FilterDialogState extends State<FilterDialog> {
+  final List<University> universityFilterSelected = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var lastFilter = buildContext.read<AttendanceFilterBloc>().state.filter;
+    var miniTextTheme = Theme.of(context).textTheme.caption;
     return AlertDialog(
       title: const Center(
         child: Text(
@@ -23,13 +36,15 @@ class FilterDialog extends StatelessWidget {
         ActionChip(
           label: const Text("لغو"),
           onPressed: () {
-            buildContext.read<AttendanceFilterBloc>().changeFilter(lastFilter);
             Navigator.pop(context);
           },
         ),
         ActionChip(
           label: const Text("اعمال"),
           onPressed: () {
+            widget.buildContext
+                .read<AttendanceFilterBloc>()
+                .changeSelectedUni(universityFilterSelected);
             Navigator.pop(context);
           },
         ),
@@ -57,25 +72,32 @@ class FilterDialog extends StatelessWidget {
               ),
               SizedBox(
                 height: 60,
-                child: ListView(
+                child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  children: [
-                    //TODO : get List of University and complete Filter page
-                    FilterChip(
-                        label: const Text("دانشکده علوم"), onSelected: (_) {}),
-                    FilterChip(
-                        label: const Text("دانشکده فرهنگ"), onSelected: (_) {}),
-                    FilterChip(
-                        label: const Text("دانشکده انسانی"),
-                        onSelected: (_) {}),
-                    FilterChip(
-                        label: const Text("دانشکده فنی و حرفه ای "),
-                        onSelected: (_) {}),
-                    FilterChip(
-                        label: const Text("دانشکده معارف"), onSelected: (_) {}),
-                  ],
+                  itemBuilder: (BuildContext context, int index) {
+                    var item = universityList[index];
+                    return FilterChip(
+                      label: Text(item.name),
+                      onSelected: (isSelected) {
+                        setState(() {
+                          if (isSelected) {
+                            universityFilterSelected.add(item);
+                          } else {
+                            universityFilterSelected.remove(item);
+                          }
+                        });
+                      },
+                      selected: universityFilterSelected.contains(item),
+                    );
+                  },
+                  itemCount: universityList.length,
                 ),
               ),
+              for (var selected in universityFilterSelected)
+                Text(
+                  selected.name,
+                  style: miniTextTheme,
+                ),
             ],
           ),
         ),
