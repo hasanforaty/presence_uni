@@ -140,39 +140,43 @@ class SortWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          child: MyIconButton(
-            onPressed: () {
-              context
-                  .read<AttendanceFilterBloc>()
-                  .changeSort(SortAttendance.sortByNumber);
-            },
-            iconData: FontAwesomeIcons.arrowUpAZ,
+    return BlocBuilder<AttendanceFilterBloc, AttendanceFilter>(
+        builder: (context, filter) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: MyIconButton(
+              onPressed: () {
+                context
+                    .read<AttendanceFilterBloc>()
+                    .changeSort(SortAttendance.sortByNumber);
+              },
+              iconData: FontAwesomeIcons.arrowUpAZ,
+            ),
           ),
-        ),
-        Expanded(
-          child: MyIconButton(
-            onPressed: () {
-              context
-                  .read<AttendanceFilterBloc>()
-                  .changeSort(SortAttendance.sortByReverseNumber);
-            },
-            iconData: (FontAwesomeIcons.arrowDownAZ),
+          Expanded(
+            child: MyIconButton(
+              onPressed: () {
+                context
+                    .read<AttendanceFilterBloc>()
+                    .changeSort(SortAttendance.sortByReverseNumber);
+              },
+              iconData: (FontAwesomeIcons.arrowDownAZ),
+            ),
           ),
-        ),
-        Expanded(
-          child: MyIconButton(
-            onPressed: () {
-              showFilter(context);
-            },
-            iconData: FontAwesomeIcons.filter,
+          Expanded(
+            child: MyIconButton(
+                onPressed: () {
+                  showFilter(context);
+                },
+                iconData: filter.numberOfFilteredActive() == 0
+                    ? FontAwesomeIcons.filter
+                    : FontAwesomeIcons.filterCircleXmark),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }
 

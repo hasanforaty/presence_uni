@@ -15,11 +15,15 @@ class FilterDialog extends StatefulWidget {
 }
 
 class _FilterDialogState extends State<FilterDialog> {
-  final List<University> universityFilterSelected = [];
+  List<University> universityFilterSelected = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    universityFilterSelected = widget.buildContext
+        .read<AttendanceFilterBloc>()
+        .state
+        .filteredUniversity;
   }
 
   @override

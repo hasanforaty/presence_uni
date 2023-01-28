@@ -9,12 +9,21 @@ class AttendanceFilter {
       : super();
 
   bool Function(Attendance) createFilter() => (item) {
-        if (filteredUniversity.isEmpty) return true;
+        if (!isFilterActive()) return true;
         for (University filter in filteredUniversity) {
           if (filter.name == item.uniName) return true;
         }
         return false;
       };
+  bool isFilterActive() {
+    if (filteredUniversity.isEmpty) return false;
+    return true;
+  }
+
+  int numberOfFilteredActive() {
+    if (!isFilterActive()) return 0;
+    return filteredUniversity.length;
+  }
 
   AttendanceFilter copyWith({
     SortAttendance? sort,
