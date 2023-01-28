@@ -13,6 +13,7 @@ import 'package:presence_absence/models/attendanceFilter.dart';
 import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/widgets/CustomSliverAppBar.dart';
 import 'package:presence_absence/widgets/attendacne_item.dart';
+import 'package:presence_absence/widgets/filter_button.dart';
 import 'package:presence_absence/widgets/filter_dialog.dart';
 
 class AttendancePage extends StatelessWidget {
@@ -166,13 +167,12 @@ class SortWidgets extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: MyIconButton(
-                onPressed: () {
-                  showFilter(context);
-                },
-                iconData: filter.numberOfFilteredActive() == 0
-                    ? FontAwesomeIcons.filter
-                    : FontAwesomeIcons.filterCircleXmark),
+            child: FilterButton(
+              filter: filter,
+              onPressed: () {
+                showFilter(context);
+              },
+            ),
           ),
         ],
       );
