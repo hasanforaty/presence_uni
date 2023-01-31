@@ -8,6 +8,7 @@ import 'package:presence_absence/bloc/attendacne_filter_bloc.dart';
 import 'package:presence_absence/bloc/attendances_bloc.dart';
 import 'package:presence_absence/bloc/selected_attendance_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
+import 'package:presence_absence/consts/key_generator.dart';
 import 'package:presence_absence/models/attendacne.dart';
 import 'package:presence_absence/models/attendanceFilter.dart';
 import 'package:presence_absence/routes.dart';
@@ -48,6 +49,7 @@ class AttendancePage extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: AttendanceItem(
+                          key: item.getKey(),
                           attendanceNumber: item.classNumber,
                           className: item.className,
                           teacherName: item.teacherName,
