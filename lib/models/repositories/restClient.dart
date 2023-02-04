@@ -3,15 +3,17 @@ import 'package:presence_absence/models/dao/course_dao.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 
+import '../dao/session_dao.dart';
+
 part 'restClient.g.dart';
 
 @RestApi(baseUrl: basicUrl)
 abstract class RestClient {
   factory RestClient(Dio dio, {required String baseUrl}) = _RestClient;
 
-  @GET(CourseURL)
-  Future<Response<List<CourseDAO>>> getCourses();
-  @POST(CourseURL)
+  @GET(courseURL)
+  Future<List<CourseDAO>> getCourses();
+  @POST(courseURL)
   Future<void> updateCourse({
     @Part(name: "teacher_id") String teacherId,
     @Part(name: "course_id") String courseId,
@@ -24,4 +26,13 @@ abstract class RestClient {
     @Part(name: "level") String level,
     @Part(name: "status") String status,
   });
+
+  @GET(sessionURL)
+  Future<List<SessionDAO>> getSessions();
+  @POST(sessionURL)
+  Future<void> updateSessions(
+      {@Part(name: "id") String id,
+      @Part(name: "course_id") String courseID,
+      @Part(name: "status") String status,
+      @Part(name: "comment") String comment});
 }
