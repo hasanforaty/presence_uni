@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presence_absence/bloc/selected_attendance_bloc.dart';
+import 'package:presence_absence/models/providers/drawer_controller_bloc.dart';
 import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/routes/log_in_page.dart';
 
@@ -18,12 +19,13 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<SelectedAttendanceBloc>(
             create: (_) => SelectedAttendanceBloc()),
+        BlocProvider(create: (_) => DrawerControllerBloc())
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         onGenerateRoute: RouteGenerator.generateRoute,
-        initialRoute: RouteGenerator.login,
+        initialRoute: RouteGenerator.portalPage,
         scrollBehavior: const ConstantScrollBehavior(),
         theme: ThemeData(
           // This is the theme of your application.

@@ -39,6 +39,7 @@ dependencies:
   font_awesome_flutter: ^10.3.0
   flutter_bloc: ^8.1.1
   retrofit: ^3.0.1+1
+  flutter_zoom_drawer: ^3.0.3
 
 dev_dependencies:
   flutter_test:

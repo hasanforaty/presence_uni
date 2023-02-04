@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:presence_absence/routes/attendance_page.dart';
 import 'package:presence_absence/routes/log_in_page.dart';
+import 'package:presence_absence/routes/portal_page.dart';
 import 'package:presence_absence/routes/session_attendance_page.dart';
 
 class RouteGenerator {
   static const String login = "/";
   static const String attendance = "/attendance";
   static const String sesstionAattendacne = "/attendance/session";
+  static const String portalPage = "/portal";
   static Route<dynamic> generateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case attendance:
@@ -16,6 +18,10 @@ class RouteGenerator {
       case sesstionAattendacne:
         {
           return MaterialPageRoute(builder: (_) => const SessionPage());
+        }
+      case portalPage:
+        {
+          return MaterialPageRoute(builder: (_) => const PortalPage());
         }
       default:
         {
@@ -36,6 +42,9 @@ class RouteGenerator {
       case Routes.session:
         myRoute = RouteGenerator.sesstionAattendacne;
         break;
+      case Routes.portal:
+        myRoute = RouteGenerator.portalPage;
+        break;
     }
     Navigator.pushNamed(context, myRoute);
   }
@@ -44,5 +53,6 @@ class RouteGenerator {
 enum Routes {
   logIn,
   attendance,
-  session;
+  session,
+  portal;
 }
