@@ -9,6 +9,7 @@ class RouteGenerator {
   static const String attendance = "/attendance";
   static const String sesstionAattendacne = "/attendance/session";
   static const String portalPage = "/portal";
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static Route<dynamic> generateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case attendance:
@@ -30,7 +31,9 @@ class RouteGenerator {
     }
   }
 
-  static void goTo(BuildContext context, Routes route) {
+  static void goTo(Routes route,
+      {BuildContext? context, bool replace = false}) {
+    BuildContext myContext = context ?? navigatorKey.currentContext!;
     String myRoute;
     switch (route) {
       case Routes.logIn:
@@ -46,7 +49,11 @@ class RouteGenerator {
         myRoute = RouteGenerator.portalPage;
         break;
     }
-    Navigator.pushNamed(context, myRoute);
+    if (replace) {
+      Navigator.pushReplacementNamed(myContext, myRoute);
+    } else {
+      Navigator.pushNamed(myContext, myRoute);
+    }
   }
 }
 

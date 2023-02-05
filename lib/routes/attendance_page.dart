@@ -56,7 +56,8 @@ class AttendancePage extends StatelessWidget {
                           uniName: item.uniName,
                           onClicked: () {
                             context.read<SelectedAttendanceBloc>().setNew(item);
-                            RouteGenerator.goTo(context, Routes.session);
+                            RouteGenerator.goTo(
+                                context: context, Routes.session);
                           },
                         ),
                       );
