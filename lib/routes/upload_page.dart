@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:filesystem_picker/filesystem_picker.dart';
 
 import '../consts/Colors.dart';
 
@@ -17,8 +20,22 @@ class UploadPage extends StatelessWidget {
           children: [
             GestureDetector(
               child: Image.asset("assets/image/upload.png"),
-              onTap: () {
+              onTap: () async {
                 //TODO get  a excel file and sent it to portal
+                String? path = await FilesystemPicker.openDialog(
+                  context: context,
+                  rootDirectory: Directory.current,
+                  fsType: FilesystemType.file,
+                  allowedExtensions: [
+                    '.jpg',
+                    '.xlsx',
+                    '.xlsm',
+                    '.xlsb',
+                  ],
+                  fileTileSelectMode: FileTileSelectMode.wholeTile,
+                  showGoUp: true,
+                );
+                print(path);
               },
             ),
             Text(

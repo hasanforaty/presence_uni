@@ -41,6 +41,7 @@ dependencies:
   retrofit: ^3.0.1+1
   flutter_zoom_drawer: ^3.0.3
   progress_dialog_null_safe: ^1.0.7
+  filesystem_picker: ^3.1.0
 
 dev_dependencies:
   flutter_test:
