@@ -3,12 +3,14 @@ import 'package:presence_absence/routes/attendance_page.dart';
 import 'package:presence_absence/routes/log_in_page.dart';
 import 'package:presence_absence/routes/portal_page.dart';
 import 'package:presence_absence/routes/session_attendance_page.dart';
+import 'package:presence_absence/routes/upload_page.dart';
 
 class RouteGenerator {
   static const String login = "/";
   static const String attendance = "/attendance";
   static const String sesstionAattendacne = "/attendance/session";
   static const String portalPage = "/portal";
+  static const String uploadPage = "/upload";
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static Route<dynamic> generateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -23,6 +25,10 @@ class RouteGenerator {
       case portalPage:
         {
           return MaterialPageRoute(builder: (_) => const PortalPage());
+        }
+      case uploadPage:
+        {
+          return MaterialPageRoute(builder: (_) => const UploadPage());
         }
       default:
         {
@@ -48,6 +54,8 @@ class RouteGenerator {
       case Routes.portal:
         myRoute = RouteGenerator.portalPage;
         break;
+      case Routes.upload:
+        myRoute = RouteGenerator.uploadPage;
     }
     if (replace) {
       Navigator.pushReplacementNamed(myContext, myRoute);
@@ -61,5 +69,6 @@ enum Routes {
   logIn,
   attendance,
   session,
-  portal;
+  portal,
+  upload;
 }

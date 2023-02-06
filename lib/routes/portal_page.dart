@@ -74,7 +74,7 @@ class PortalPage extends StatelessWidget {
                             name: "حضور و غیاب"),
                         DrawerItem(
                             onPressed: () {
-                              //TODO go to upload page
+                              RouteGenerator.goTo(Routes.upload);
                             },
                             iconData: Icons.upload,
                             name: "ارسال فایل"),
