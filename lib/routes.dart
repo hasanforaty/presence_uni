@@ -3,6 +3,7 @@ import 'package:presence_absence/routes/attendance_page.dart';
 import 'package:presence_absence/routes/log_in_page.dart';
 import 'package:presence_absence/routes/portal_page.dart';
 import 'package:presence_absence/routes/session_attendance_page.dart';
+import 'package:presence_absence/routes/splash_screen.dart';
 import 'package:presence_absence/routes/upload_page.dart';
 
 class RouteGenerator {
@@ -11,6 +12,7 @@ class RouteGenerator {
   static const String sesstionAattendacne = "/attendance/session";
   static const String portalPage = "/portal";
   static const String uploadPage = "/upload";
+  static const String splashPage = "/splash";
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static Route<dynamic> generateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -29,6 +31,10 @@ class RouteGenerator {
       case uploadPage:
         {
           return MaterialPageRoute(builder: (_) => const UploadPage());
+        }
+      case splashPage:
+        {
+          return MaterialPageRoute(builder: (_) => const SplashScreen());
         }
       default:
         {
@@ -54,6 +60,9 @@ class RouteGenerator {
       case Routes.portal:
         myRoute = RouteGenerator.portalPage;
         break;
+      case Routes.splash:
+        myRoute = RouteGenerator.splashPage;
+        break;
       case Routes.upload:
         myRoute = RouteGenerator.uploadPage;
     }
@@ -70,5 +79,6 @@ enum Routes {
   attendance,
   session,
   portal,
-  upload;
+  upload,
+  splash;
 }

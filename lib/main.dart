@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         onGenerateRoute: RouteGenerator.generateRoute,
         navigatorKey: RouteGenerator.navigatorKey,
-        initialRoute: RouteGenerator.login,
+        initialRoute: RouteGenerator.splashPage,
         scrollBehavior: const ConstantScrollBehavior(),
         theme: ThemeData(
           // This is the theme of your application.

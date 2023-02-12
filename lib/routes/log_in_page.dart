@@ -5,9 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:presence_absence/bloc/users_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/consts/consts.dart';
-import 'package:presence_absence/models/error_handling.dart';
 import 'package:presence_absence/models/providers/retrofit_provider.dart';
-import 'package:presence_absence/models/repositories/restClient.dart';
 import 'package:presence_absence/models/roles.dart';
 import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/widgets/my_passworld.dart';
@@ -133,6 +131,10 @@ class LoginPage extends StatelessWidget {
                       print(res?.toString());
                     }
                     await pd.hide();
+
+                    RouteGenerator.goTo(Routes.portal,
+                        context: RouteGenerator.navigatorKey.currentContext!,
+                        replace: true);
                   },
                   child: Container(
                     height: 50,

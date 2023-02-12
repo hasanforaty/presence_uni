@@ -7,10 +7,12 @@ import 'package:lottie/lottie.dart';
 import 'package:presence_absence/bloc/attendacne_filter_bloc.dart';
 import 'package:presence_absence/bloc/attendances_bloc.dart';
 import 'package:presence_absence/bloc/selected_attendance_bloc.dart';
+import 'package:presence_absence/bloc/universities_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/consts/key_generator.dart';
 import 'package:presence_absence/models/attendacne.dart';
 import 'package:presence_absence/models/attendanceFilter.dart';
+import 'package:presence_absence/models/providers/retrofit_provider.dart';
 import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/widgets/CustomSliverAppBar.dart';
 import 'package:presence_absence/widgets/attendacne_item.dart';
@@ -37,52 +39,74 @@ class _AttendancePageState extends State<AttendancePage> {
 
   @override
   Widget build(BuildContext context) {
+    var rest = context.read<RetrofitProvider>().state;
+
     return Scaffold(
       body: MultiBlocProvider(
         providers: [
           BlocProvider<AttendacneRepo>(create: (_) => AttendacneRepo()),
           BlocProvider<AttendanceFilterBloc>(
               create: (_) => AttendanceFilterBloc()),
+          BlocProvider<UniversitiesBloc>(create: (_) => UniversitiesBloc()),
         ],
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          color: kLogInBackGround,
-          child: CustomScrollView(
-            slivers: [
-              const _MyAppBarSliver_1(),
-              BlocBuilder<AttendacneRepo, List<Attendance>>(
-                  builder: (context, items) {
-                return BlocBuilder<AttendanceFilterBloc, AttendanceFilter>(
-                    builder: (context, filter) {
-                  var list = items.where(filter.createFilter()).toList()
-                    ..sort(Attendance.sort(filter.sort));
-                  return SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      var item = list[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: AttendanceItem(
-                          key: item.getKey(),
-                          attendanceNumber: item.classNumber,
-                          className: item.className,
-                          teacherName: item.teacherName,
-                          uniName: item.uniName,
-                          onClicked: () {
-                            context.read<SelectedAttendanceBloc>().setNew(item);
-                            RouteGenerator.goTo(
-                                context: context, Routes.session);
+        child: FutureBuilder(
+          future: rest.getUniversities().then((value) {
+            var list = value;
+            context.read<UniversitiesBloc>().newUniversities(list);
+            return rest.getCourses();
+          }).then((value) {}),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            ProgressDialog pd = ProgressDialog(context);
+            if (snapshot.connectionState == ConnectionState.done) {
+              pd.hide();
+              return Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                color: kLogInBackGround,
+                child: CustomScrollView(
+                  slivers: [
+                    const _MyAppBarSliver_1(),
+                    BlocBuilder<AttendacneRepo, List<Attendance>>(
+                        builder: (context, items) {
+                      return BlocBuilder<AttendanceFilterBloc,
+                          AttendanceFilter>(builder: (context, filter) {
+                        var list = items.where(filter.createFilter()).toList()
+                          ..sort(Attendance.sort(filter.sort));
+                        return SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            var item = list[index];
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: AttendanceItem(
+                                key: item.getKey(),
+                                attendanceNumber: item.classNumber,
+                                className: item.className,
+                                teacherName: item.teacherName,
+                                uniName: item.uniName,
+                                onClicked: () {
+                                  context
+                                      .read<SelectedAttendanceBloc>()
+                                      .setNew(item);
+                                  RouteGenerator.goTo(
+                                      context: context, Routes.session);
+                                },
+                              ),
+                            );
                           },
-                        ),
-                      );
-                    },
-                    childCount: list.length,
-                  ));
-                });
-              })
-            ],
-          ),
+                          childCount: list.length,
+                        ));
+                      });
+                    })
+                  ],
+                ),
+              );
+            }
+            pd.show();
+            return Container(
+              color: kLogInBackGround,
+            );
+          },
         ),
       ),
     );
