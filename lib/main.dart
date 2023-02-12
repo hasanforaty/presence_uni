@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presence_absence/bloc/selected_attendance_bloc.dart';
+import 'package:presence_absence/consts/url_const.dart';
 import 'package:presence_absence/models/providers/drawer_controller_bloc.dart';
+import 'package:presence_absence/models/providers/retrofit_provider.dart';
+import 'package:presence_absence/models/repositories/restClient.dart';
 import 'package:presence_absence/routes.dart';
-import 'package:presence_absence/routes/log_in_page.dart';
+import 'package:dio/dio.dart';
 
 import 'bloc/users_bloc.dart';
 
@@ -23,7 +26,14 @@ class MyApp extends StatelessWidget {
             create: (_) => SelectedAttendanceBloc()),
         BlocProvider<DrawerControllerBloc>(
             create: (_) => DrawerControllerBloc()),
-        BlocProvider<UserBloc>(create: (_) => UserBloc()),
+        BlocProvider<UserBloc>(
+          create: (_) => UserBloc(),
+        ),
+        BlocProvider<RetrofitProvider>(create: (_) {
+          var dio = Dio();
+          dio.options.headers["Content-Type"] = "application/json";
+          return RetrofitProvider(RestClient(dio, baseUrl: basicUrl));
+        })
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

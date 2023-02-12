@@ -16,9 +16,24 @@ import 'package:presence_absence/widgets/CustomSliverAppBar.dart';
 import 'package:presence_absence/widgets/attendacne_item.dart';
 import 'package:presence_absence/widgets/filter_button.dart';
 import 'package:presence_absence/widgets/filter_dialog.dart';
+import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 
-class AttendancePage extends StatelessWidget {
+class AttendancePage extends StatefulWidget {
   const AttendancePage({Key? key}) : super(key: key);
+
+  @override
+  State<AttendancePage> createState() => _AttendancePageState();
+}
+
+class _AttendancePageState extends State<AttendancePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    var pd = ProgressDialog(context);
+    pd.show();
+    Future.delayed(Duration(seconds: 3)).then((value) => pd.hide());
+  }
 
   @override
   Widget build(BuildContext context) {

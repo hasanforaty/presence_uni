@@ -1,25 +1,26 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/instance_manager.dart';
-import 'package:get/route_manager.dart';
 import 'package:lottie/lottie.dart';
 import 'package:presence_absence/bloc/users_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/consts/consts.dart';
+import 'package:presence_absence/models/error_handling.dart';
+import 'package:presence_absence/models/providers/retrofit_provider.dart';
+import 'package:presence_absence/models/repositories/restClient.dart';
 import 'package:presence_absence/models/roles.dart';
-import 'package:presence_absence/models/users.dart';
 import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/widgets/my_passworld.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
+import 'package:dio/dio.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     ProgressDialog pd = ProgressDialog(context);
+    TextEditingController userNameController = TextEditingController();
+    TextEditingController passworldController = TextEditingController();
     return Scaffold(
       body: Container(
         color: kLogInBackGround,
@@ -53,6 +54,7 @@ class LoginPage extends StatelessWidget {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: TextField(
+                      controller: userNameController,
                       style: const TextStyle(color: Colors.white),
                       textDirection: TextDirection.rtl,
                       decoration: InputDecoration(
@@ -91,7 +93,9 @@ class LoginPage extends StatelessWidget {
                   padding: textPadding,
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width,
-                    child: const MyPasswordWidget(),
+                    child: MyPasswordWidget(
+                      controller: passworldController,
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -99,30 +103,36 @@ class LoginPage extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    //TODO put check right answer
-                    //TODO log in
                     pd.show();
-                    await Future.delayed(const Duration(seconds: 5));
-                    var user = Users.def();
+                    try {
+                      //TODO put check right answer
+                      var rest = context.read<RetrofitProvider>();
+                      var loginBloc = context.read<UserBloc>();
+
+                      var userDao = await rest.state
+                          .login("userName", "password", "application/json");
+                      var user = userDao.toUsers();
+
+                      loginBloc.changeUsers(user);
+
+                      if (kDebugMode) {
+                        print(user.toString());
+                      }
+                      if (user.role == Role.admin) {
+                        // Navigator.pop(context);
+                        RouteGenerator.goTo(Routes.portal,
+                            context:
+                                RouteGenerator.navigatorKey.currentContext!,
+                            replace: true);
+                      } else {
+                        RouteGenerator.goTo(Routes.attendance,
+                            context: context, replace: true);
+                      }
+                    } catch (e) {
+                      var res = (e as DioError).response;
+                      print(res?.toString());
+                    }
                     await pd.hide();
-                    if (kDebugMode) {
-                      print(user.toString());
-                    }
-                    if (user.role == Role.admin) {
-                      if (kDebugMode) {
-                        print("going to portal");
-                      }
-                      // Navigator.pop(context);
-                      RouteGenerator.goTo(Routes.portal,
-                          context: RouteGenerator.navigatorKey.currentContext!,
-                          replace: true);
-                    } else {
-                      if (kDebugMode) {
-                        print("going to attendance");
-                      }
-                      RouteGenerator.goTo(Routes.attendance,
-                          context: context, replace: true);
-                    }
                   },
                   child: Container(
                     height: 50,

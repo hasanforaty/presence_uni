@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../consts/Colors.dart';
 
 class MyPasswordWidget extends StatefulWidget {
-  const MyPasswordWidget({Key? key}) : super(key: key);
+  final TextEditingController controller;
+  const MyPasswordWidget({Key? key, required this.controller})
+      : super(key: key);
 
   @override
   State<MyPasswordWidget> createState() => _MyPasswordWidgetState();
@@ -14,6 +16,7 @@ class _MyPasswordWidgetState extends State<MyPasswordWidget> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.controller,
       obscureText: isObscure,
       style: const TextStyle(color: Colors.white),
       textDirection: TextDirection.rtl,
