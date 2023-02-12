@@ -8,6 +8,10 @@ import 'package:presence_absence/models/repositories/restClient.dart';
 import 'package:presence_absence/routes.dart';
 import 'package:dio/dio.dart';
 
+import 'bloc/attendacne_filter_bloc.dart';
+import 'bloc/attendances_bloc.dart';
+import 'bloc/course_bloc.dart';
+import 'bloc/universities_bloc.dart';
 import 'bloc/users_bloc.dart';
 
 void main() {
@@ -33,7 +37,12 @@ class MyApp extends StatelessWidget {
           var dio = Dio();
           dio.options.headers["Content-Type"] = "application/json";
           return RetrofitProvider(RestClient(dio, baseUrl: basicUrl));
-        })
+        }),
+        BlocProvider<AttendacneRepo>(create: (_) => AttendacneRepo()),
+        BlocProvider<AttendanceFilterBloc>(
+            create: (_) => AttendanceFilterBloc()),
+        BlocProvider<UniversitiesBloc>(create: (_) => UniversitiesBloc()),
+        BlocProvider<CourseBloc>(create: (_) => CourseBloc()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

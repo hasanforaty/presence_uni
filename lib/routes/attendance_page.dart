@@ -6,10 +6,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:presence_absence/bloc/attendacne_filter_bloc.dart';
 import 'package:presence_absence/bloc/attendances_bloc.dart';
+import 'package:presence_absence/bloc/course_bloc.dart';
 import 'package:presence_absence/bloc/selected_attendance_bloc.dart';
 import 'package:presence_absence/bloc/universities_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/consts/key_generator.dart';
+import 'package:presence_absence/consts/retrofit_utils.dart';
 import 'package:presence_absence/models/attendacne.dart';
 import 'package:presence_absence/models/attendanceFilter.dart';
 import 'package:presence_absence/models/providers/retrofit_provider.dart';
@@ -32,82 +34,74 @@ class _AttendancePageState extends State<AttendancePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var pd = ProgressDialog(context);
-    pd.show();
-    Future.delayed(Duration(seconds: 3)).then((value) => pd.hide());
   }
 
   @override
   Widget build(BuildContext context) {
     var rest = context.read<RetrofitProvider>().state;
-
+    var universityBloc = context.read<UniversitiesBloc>();
+    var courseBloc = context.read<CourseBloc>();
+    var attendanceRepo = context.read<AttendacneRepo>();
     return Scaffold(
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider<AttendacneRepo>(create: (_) => AttendacneRepo()),
-          BlocProvider<AttendanceFilterBloc>(
-              create: (_) => AttendanceFilterBloc()),
-          BlocProvider<UniversitiesBloc>(create: (_) => UniversitiesBloc()),
-        ],
-        child: FutureBuilder(
-          future: rest.getUniversities().then((value) {
-            var list = value;
-            context.read<UniversitiesBloc>().newUniversities(list);
-            return rest.getCourses();
-          }).then((value) {}),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-            ProgressDialog pd = ProgressDialog(context);
-            if (snapshot.connectionState == ConnectionState.done) {
-              pd.hide();
-              return Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                color: kLogInBackGround,
-                child: CustomScrollView(
-                  slivers: [
-                    const _MyAppBarSliver_1(),
-                    BlocBuilder<AttendacneRepo, List<Attendance>>(
-                        builder: (context, items) {
-                      return BlocBuilder<AttendanceFilterBloc,
-                          AttendanceFilter>(builder: (context, filter) {
-                        var list = items.where(filter.createFilter()).toList()
-                          ..sort(Attendance.sort(filter.sort));
-                        return SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            var item = list[index];
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: AttendanceItem(
-                                key: item.getKey(),
-                                attendanceNumber: item.classNumber,
-                                className: item.className,
-                                teacherName: item.teacherName,
-                                uniName: item.uniName,
-                                onClicked: () {
-                                  context
-                                      .read<SelectedAttendanceBloc>()
-                                      .setNew(item);
-                                  RouteGenerator.goTo(
-                                      context: context, Routes.session);
-                                },
-                              ),
-                            );
-                          },
-                          childCount: list.length,
-                        ));
-                      });
-                    })
-                  ],
-                ),
-              );
-            }
-            pd.show();
-            return Container(
-              color: kLogInBackGround,
-            );
-          },
+      body: FutureBuilder(
+        future: getInfoForAttendance(
+          context: context,
+          rest: rest,
+          universitiesBloc: universityBloc,
+          courseBloc: courseBloc,
+          attendacneRepo: attendanceRepo,
         ),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          //TODO put progress bar
+          ProgressDialog pd = ProgressDialog(context);
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: kLogInBackGround,
+              child: CustomScrollView(
+                slivers: [
+                  const _MyAppBarSliver_1(),
+                  BlocBuilder<AttendacneRepo, List<Attendance>>(
+                      builder: (context, items) {
+                    return BlocBuilder<AttendanceFilterBloc, AttendanceFilter>(
+                        builder: (context, filter) {
+                      var list = items.where(filter.createFilter()).toList()
+                        ..sort(Attendance.sort(filter.sort));
+                      return SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          var item = list[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: AttendanceItem(
+                              key: item.getKey(),
+                              attendanceNumber: item.classNumber,
+                              className: item.className,
+                              teacherName: item.teacherName,
+                              uniName: item.uniName,
+                              onClicked: () {
+                                context
+                                    .read<SelectedAttendanceBloc>()
+                                    .setNew(item);
+                                RouteGenerator.goTo(
+                                    context: context, Routes.session);
+                              },
+                            ),
+                          );
+                        },
+                        childCount: list.length,
+                      ));
+                    });
+                  })
+                ],
+              ),
+            );
+          }
+          return Container(
+            color: kLogInBackGround,
+          );
+        },
       ),
     );
   }
@@ -118,13 +112,24 @@ class _MyAppBarSliver_1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var rest = context.read<RetrofitProvider>().state;
+    var universityBloc = context.read<UniversitiesBloc>();
+    var courseBloc = context.read<CourseBloc>();
+    var attendanceRepo = context.read<AttendacneRepo>();
     return SliverPersistentHeader(
       pinned: true,
       floating: true,
       delegate: CustomSliverAppBar(
         expandedHeight: 200,
         onStretch: () async {
-          //TODO refresh the list.
+          //TODO put progress bar
+          await getInfoForAttendance(
+            context: context,
+            rest: rest,
+            universitiesBloc: universityBloc,
+            courseBloc: courseBloc,
+            attendacneRepo: attendanceRepo,
+          );
         },
         background: DecoratedBox(
           position: DecorationPosition.background,
