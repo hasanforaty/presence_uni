@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:presence_absence/bloc/users_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/consts/consts.dart';
+import 'package:presence_absence/consts/retrofit_utils.dart';
 import 'package:presence_absence/models/providers/retrofit_provider.dart';
 import 'package:presence_absence/models/roles.dart';
 import 'package:presence_absence/routes.dart';
@@ -18,7 +19,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     ProgressDialog pd = ProgressDialog(context);
     TextEditingController userNameController = TextEditingController();
-    TextEditingController passworldController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return Scaffold(
       body: Container(
         color: kLogInBackGround,
@@ -92,7 +93,7 @@ class LoginPage extends StatelessWidget {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: MyPasswordWidget(
-                      controller: passworldController,
+                      controller: passwordController,
                     ),
                   ),
                 ),
@@ -101,37 +102,31 @@ class LoginPage extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    pd.show();
-                    try {
-                      //TODO put check right answer
-                      var rest = context.read<RetrofitProvider>();
-                      var loginBloc = context.read<UserBloc>();
-
-                      var userDao = await rest.state
-                          .login("userName", "password", "application/json");
-                      var user = userDao.toUsers();
-
-                      loginBloc.changeUsers(user);
-
-                      if (kDebugMode) {
-                        print(user.toString());
-                      }
-                      if (user.role == Role.admin) {
-                        // Navigator.pop(context);
-                        RouteGenerator.goTo(Routes.portal,
-                            context:
-                                RouteGenerator.navigatorKey.currentContext!,
-                            replace: true);
-                      } else {
-                        RouteGenerator.goTo(Routes.attendance,
-                            context: context, replace: true);
-                      }
-                    } catch (e) {
-                      var res = (e as DioError).response;
-                      print(res?.toString());
+                    var username = userNameController.value.text;
+                    var password = passwordController.value.text;
+                    //TODO put check right answer
+                    if (username.isEmpty || password.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                          "لطفا مقادیر نام کاربری و پسورد را وارد کنید",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(color: Colors.white),
+                          textDirection: TextDirection.rtl,
+                        ),
+                        duration: const Duration(seconds: 2),
+                      ));
+                      return;
                     }
-                    await pd.hide();
+                    pd.show();
 
+                    await logIn(
+                        userName: username,
+                        password: password,
+                        context: context);
+                    await pd.hide();
+                    //TODO delete when server fixed
                     RouteGenerator.goTo(Routes.portal,
                         context: RouteGenerator.navigatorKey.currentContext!,
                         replace: true);

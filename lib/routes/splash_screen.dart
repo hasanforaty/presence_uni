@@ -14,7 +14,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(const Duration(seconds: 5))
+    Future.delayed(const Duration(seconds: 3))
         .then((value) => RouteGenerator.goTo(Routes.logIn, replace: true));
   }
 
