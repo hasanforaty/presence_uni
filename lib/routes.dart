@@ -67,9 +67,13 @@ class RouteGenerator {
         myRoute = RouteGenerator.uploadPage;
     }
     if (replace) {
-      Navigator.pushReplacementNamed(myContext, myRoute);
+      print("reached replace myCurrent route : $myRoute");
+      Navigator.of(navigatorKey.currentContext!)
+          .popUntil((route) => route.isCurrent);
+      print("puped");
+      Navigator.pushReplacementNamed(navigatorKey.currentContext!, myRoute);
     } else {
-      Navigator.pushNamed(myContext, myRoute);
+      Navigator.pushNamed(navigatorKey.currentContext!, myRoute);
     }
   }
 }

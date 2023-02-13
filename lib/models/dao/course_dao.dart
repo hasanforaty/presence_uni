@@ -4,30 +4,44 @@ part 'course_dao.g.dart';
 
 @JsonSerializable()
 class CourseDAO {
-  String teacher_id;
-  String course_id;
-  String university;
-  String present_code;
+  int id;
+  int teacher_id;
+  int course_id;
+  int location_id;
   String name;
-  String student_count;
-  String term;
+  int students_count;
+  int term_id;
   String group;
   String level;
   String status;
 
+  factory CourseDAO.fromJson(Map<String, dynamic> json) =>
+      _$CourseDAOFromJson(json);
+  Map<String, dynamic> toJson() => _$CourseDAOToJson(this);
+
   CourseDAO({
+    required this.id,
     required this.teacher_id,
     required this.course_id,
-    required this.university,
-    required this.present_code,
+    required this.location_id,
     required this.name,
-    required this.student_count,
-    required this.term,
+    required this.students_count,
+    required this.term_id,
     required this.group,
     required this.level,
     required this.status,
   });
-  factory CourseDAO.fromJson(Map<String, dynamic> json) =>
-      _$CourseDAOFromJson(json);
-  Map<String, dynamic> toJson() => _$CourseDAOToJson(this);
+}
+
+@JsonSerializable()
+class CoursesDAO {
+  List<CourseDAO> data;
+
+  CoursesDAO({
+    required this.data,
+  });
+
+  factory CoursesDAO.fromJson(Map<String, dynamic> json) =>
+      _$CoursesDAOFromJson(json);
+  Map<String, dynamic> toJson() => _$CoursesDAOToJson(this);
 }

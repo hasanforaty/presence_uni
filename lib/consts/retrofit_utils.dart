@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presence_absence/bloc/attendances_bloc.dart';
+import 'package:presence_absence/consts/consts.dart';
 import 'package:presence_absence/consts/url_const.dart';
 import 'package:presence_absence/models/repositories/restClient.dart';
 
@@ -16,32 +17,35 @@ import '../routes.dart';
 Future logIn(
     {required String userName,
     required String password,
-    required BuildContext context}) async {
+    required BuildContext context,
+    required void Function() onFinished}) async {
   try {
     var rest = context.read<RetrofitProvider>();
     var loginBloc = context.read<UserBloc>();
 
     var userDao =
         await rest.state.login(userName, password, "application/json");
-    var user = userDao.toUsers();
+    var user = userDao.data!.toUsers();
 
     loginBloc.changeUsers(user);
     var dio = Dio();
     dio.options.headers["Content-Type"] = "application/json";
     dio.options.headers["Authorization"] = "Bearer ${user.auth}";
+    dio.interceptors.add(myInternetIntercepter);
     context
         .read<RetrofitProvider>()
         .newClient(RestClient(dio, baseUrl: basicUrl));
+    onFinished();
     if (user.role == Role.admin) {
       // Navigator.pop(context);
-      RouteGenerator.goTo(Routes.portal,
-          context: RouteGenerator.navigatorKey.currentContext!, replace: true);
+      print("reach rule admin");
+      RouteGenerator.goTo(Routes.portal, context: context, replace: true);
     } else {
+      print("reach rule other");
       RouteGenerator.goTo(Routes.attendance, context: context, replace: true);
     }
-  } catch (e) {
-    var res = (e as DioError).response;
-    print(res?.toString());
+  } on Exception catch (e) {
+    print(e);
   }
 }
 
@@ -53,30 +57,38 @@ Future getInfoForAttendance({
   required AttendacneRepo attendacneRepo,
 }) async {
   try {
+    //TODO unComment When Server is right
     var universities = await rest.getUniversities();
     var list = universities;
-    universitiesBloc.newUniversities(list);
+    universitiesBloc.newUniversities(list.data!.data);
     var courses = await rest.getCourses();
 
-    courseBloc.newCourses(courses);
+    courseBloc.newCourses(courses.data!.data);
     var session = await rest.getSessions();
+    var teachers = await rest.getTeachers();
+    var locations = await rest.getLocations();
+    var attendanceList = session.data?.data.map((se) {
+      var course = courses.data!.data
+          .firstWhere((element) => element.id == se.course_id);
 
-    var attendanceList = session.map((se) {
-      var course =
-          courses.firstWhere((element) => element.course_id == se.course_id);
+      var teacher = teachers.data!.data
+          .firstWhere((element) => element.id == course.teacher_id);
+      var location = locations.data!.data
+          .firstWhere((element) => element.id == course.location_id);
+      var uni = list.data!.data
+          .firstWhere((element) => element.id == location.university_id);
       return Attendance(
           className: course.name,
-          teacherName: course.teacher_id,
-          uniName: course.university,
-          sessionId: se.id,
-          numberOfStudent: course.student_count,
-          classNumber: course.present_code);
+          teacherName: "${teacher.name} ${teacher.last_name}",
+          uniName: uni.name,
+          sessionId: se.id.toString(),
+          numberOfStudent: course.students_count.toString(),
+          classNumber: location.class_number.toString());
     }).toList();
 
-    attendacneRepo.replace(attendanceList);
-  } catch (e) {
-    var res = (e as DioError).response;
-    print(res?.toString());
+    attendacneRepo.replace(attendanceList!);
+  } on Exception catch (e) {
+    print(e);
   }
 
   return Future.value();

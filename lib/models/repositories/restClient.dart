@@ -1,7 +1,10 @@
 import 'package:presence_absence/consts/url_const.dart';
 import 'package:presence_absence/models/dao/course_dao.dart';
+import 'package:presence_absence/models/dao/location_dao.dart';
+import 'package:presence_absence/models/dao/teacher_dao.dart';
 import 'package:presence_absence/models/dao/university_dao.dart';
 import 'package:presence_absence/models/dao/users_dao.dart';
+import 'package:presence_absence/models/response.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 
@@ -14,7 +17,7 @@ abstract class RestClient {
   factory RestClient(Dio dio, {required String baseUrl}) = _RestClient;
 
   @GET(courseURL)
-  Future<List<CourseDAO>> getCourses();
+  Future<BaseResponse<CoursesDAO>> getCourses();
   // @POST(courseURL)
   // Future<void> updateCourse({
   //   @Part(name: "teacher_id") String teacherId,
@@ -30,7 +33,7 @@ abstract class RestClient {
   // });
 
   @GET(sessionURL)
-  Future<List<SessionDAO>> getSessions();
+  Future<BaseResponse<SessionsDAO>> getSessions();
   // @POST(sessionURL)
   // Future<void> updateSessions(
   //     {@Part(name: "id") String id,
@@ -39,8 +42,12 @@ abstract class RestClient {
   //     @Part(name: "comment") String comment});
 
   @POST(loginURL)
-  Future<UserDao> login(@Part(name: "email") userName,
+  Future<BaseResponse<UserDao>> login(@Part(name: "email") userName,
       @Part(name: "password") password, @Header("Content-Type") String header);
-  @POST(university)
-  Future<List<UniversityDao>> getUniversities();
+  @GET(university)
+  Future<BaseResponse<UniversitiesDao>> getUniversities();
+  @GET(teacherURL)
+  Future<BaseResponse<TeachersDao>> getTeachers();
+  @GET(locationURL)
+  Future<BaseResponse<LocationsDao>> getLocations();
 }

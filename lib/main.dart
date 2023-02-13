@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presence_absence/bloc/selected_attendance_bloc.dart';
+import 'package:presence_absence/consts/consts.dart';
 import 'package:presence_absence/consts/url_const.dart';
 import 'package:presence_absence/models/providers/drawer_controller_bloc.dart';
 import 'package:presence_absence/models/providers/retrofit_provider.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<RetrofitProvider>(create: (_) {
           var dio = Dio();
+          dio.interceptors.add(myInternetIntercepter);
           dio.options.headers["Content-Type"] = "application/json";
           return RetrofitProvider(RestClient(dio, baseUrl: basicUrl));
         }),

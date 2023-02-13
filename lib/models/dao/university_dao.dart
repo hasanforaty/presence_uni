@@ -16,3 +16,15 @@ class UniversityDao {
   factory UniversityDao.fromJson(Map<String, dynamic> json) =>
       _$UniversityDaoFromJson(json);
 }
+
+@JsonSerializable()
+class UniversitiesDao {
+  List<UniversityDao> data;
+
+  UniversitiesDao({
+    required this.data,
+  });
+  Map<String, dynamic> toJson() => _$UniversitiesDaoToJson(this);
+  factory UniversitiesDao.fromJson(Map<String, dynamic> json) =>
+      _$UniversitiesDaoFromJson(json);
+}

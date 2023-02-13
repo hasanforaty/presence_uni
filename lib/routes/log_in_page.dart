@@ -1,17 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:presence_absence/bloc/users_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/consts/consts.dart';
 import 'package:presence_absence/consts/retrofit_utils.dart';
-import 'package:presence_absence/models/providers/retrofit_provider.dart';
-import 'package:presence_absence/models/roles.dart';
-import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/widgets/my_passworld.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
-import 'package:dio/dio.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -124,12 +118,14 @@ class LoginPage extends StatelessWidget {
                     await logIn(
                         userName: username,
                         password: password,
-                        context: context);
-                    await pd.hide();
+                        context: context,
+                        onFinished: () {
+                          pd.hide();
+                        });
                     //TODO delete when server fixed
-                    RouteGenerator.goTo(Routes.portal,
-                        context: RouteGenerator.navigatorKey.currentContext!,
-                        replace: true);
+                    // RouteGenerator.goTo(Routes.portal,
+                    //     context: RouteGenerator.navigatorKey.currentContext!,
+                    //     replace: true);
                   },
                   child: Container(
                     height: 50,
