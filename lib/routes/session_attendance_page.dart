@@ -49,6 +49,9 @@ class _SessionPageState extends State<SessionPage> {
                 if (item == null) {
                   Navigator.pop(context);
                 }
+                if (item?.comment != null) {
+                  textController.text = item?.comment ?? " ";
+                }
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,23 +110,19 @@ class _SessionBottom extends StatelessWidget {
           Expanded(
               child: TextButton(
             onPressed: () => onClicked(true),
+            style: TextButton.styleFrom(backgroundColor: Colors.green[300]),
             child: Text(
-              "حضور",
+              "حاضر",
               style: Theme.of(context)
                   .textTheme
                   .titleLarge
                   ?.copyWith(color: Colors.white),
             ),
           )),
-          const VerticalDivider(
-            width: 8,
-            thickness: 1,
-            indent: 16,
-            endIndent: 16,
-          ),
           Expanded(
               child: TextButton(
             onPressed: () => onClicked(false),
+            style: TextButton.styleFrom(backgroundColor: Colors.redAccent),
             child: Text(
               "غایب",
               style: Theme.of(context)

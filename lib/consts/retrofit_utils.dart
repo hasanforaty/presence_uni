@@ -46,6 +46,7 @@ Future logIn(
     }
   } on Exception catch (e) {
     print(e);
+    onFinished();
   }
 }
 
@@ -57,7 +58,6 @@ Future getInfoForAttendance({
   required AttendacneRepo attendacneRepo,
 }) async {
   try {
-    //TODO unComment When Server is right
     var universities = await rest.getUniversities();
     var list = universities;
     universitiesBloc.newUniversities(list.data!.data);
@@ -77,18 +77,44 @@ Future getInfoForAttendance({
           .firstWhere((element) => element.id == course.location_id);
       var uni = list.data!.data
           .firstWhere((element) => element.id == location.university_id);
+      AttendanceStatus status = AttendanceStatus.unDecided;
+      if (se.status == null) status = AttendanceStatus.unDecided;
+      if ((se.status ?? "") == "absent") status = AttendanceStatus.absent;
+      if ((se.status ?? "") == "present") status = AttendanceStatus.present;
       return Attendance(
-          className: course.name,
-          teacherName: "${teacher.name} ${teacher.last_name}",
-          uniName: uni.name,
-          sessionId: se.id,
-          numberOfStudent: course.students_count.toString(),
-          classNumber: location.class_number.toString());
+        className: course.name,
+        teacherName: "${teacher.name} ${teacher.last_name}",
+        uniName: uni.name,
+        sessionId: se.id,
+        numberOfStudent: course.students_count.toString(),
+        classNumber: location.class_number.toString(),
+        status: status,
+        comment: se.comment,
+      );
     }).toList();
 
     attendacneRepo.replace(attendanceList!);
   } on Exception catch (e) {
     print(e);
+    if (e is DioError) {
+      return Future.value();
+    }
+    await Future.delayed(const Duration(seconds: 2));
+    var message = "مشکلی در ساختار برنامه رخ داده";
+    ScaffoldMessenger.of(RouteGenerator.navigatorKey.currentContext!)
+        .showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          textDirection: TextDirection.rtl,
+          style: Theme.of(RouteGenerator.navigatorKey.currentContext!)
+              .textTheme
+              .titleMedium
+              ?.copyWith(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   return Future.value();
@@ -105,7 +131,7 @@ Future sendSessionUpdate({
     var commentKey = "comment";
     var statusKey = "status";
     await rest.updateSessions(sessionId,
-        {commentKey: comment, statusKey: present ? "able" : "disable"});
+        {commentKey: comment, statusKey: present ? "present" : "absent"});
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text(
         "تغیرات اعمال شد",
@@ -121,9 +147,9 @@ Future sendSessionUpdate({
         "تغیرات اعمال نشد",
         textDirection: TextDirection.rtl,
       ),
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 1),
     ));
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
   }
 
   Navigator.of(context).pop();

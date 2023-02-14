@@ -32,28 +32,29 @@ class AttendancePage extends StatefulWidget {
 class _AttendancePageState extends State<AttendancePage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    ProgressDialog pd = ProgressDialog(context);
     var rest = context.read<RetrofitProvider>().state;
     var universityBloc = context.read<UniversitiesBloc>();
     var courseBloc = context.read<CourseBloc>();
     var attendanceRepo = context.read<AttendacneRepo>();
     return Scaffold(
       body: FutureBuilder(
-        future: getInfoForAttendance(
-          context: context,
-          rest: rest,
-          universitiesBloc: universityBloc,
-          courseBloc: courseBloc,
-          attendacneRepo: attendanceRepo,
-        ),
+        future: Future.value()
+            .then((value) => pd.show())
+            .then((value) => getInfoForAttendance(
+                  context: context,
+                  rest: rest,
+                  universitiesBloc: universityBloc,
+                  courseBloc: courseBloc,
+                  attendacneRepo: attendanceRepo,
+                ))
+            .then((value) => pd.hide()),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          //TODO put progress bar
-          ProgressDialog pd = ProgressDialog(context);
           if (snapshot.connectionState == ConnectionState.done) {
             return Container(
               height: MediaQuery.of(context).size.height,
@@ -80,6 +81,7 @@ class _AttendancePageState extends State<AttendancePage> {
                               className: item.className,
                               teacherName: item.teacherName,
                               uniName: item.uniName,
+                              status: item.status,
                               onClicked: () {
                                 context
                                     .read<SelectedAttendanceBloc>()
@@ -116,6 +118,7 @@ class _MyAppBarSliver_1 extends StatelessWidget {
     var universityBloc = context.read<UniversitiesBloc>();
     var courseBloc = context.read<CourseBloc>();
     var attendanceRepo = context.read<AttendacneRepo>();
+    ProgressDialog pd = ProgressDialog(context);
     return SliverPersistentHeader(
       pinned: true,
       floating: true,
@@ -123,13 +126,16 @@ class _MyAppBarSliver_1 extends StatelessWidget {
         expandedHeight: 200,
         onStretch: () async {
           //TODO put progress bar
-          await getInfoForAttendance(
-            context: context,
-            rest: rest,
-            universitiesBloc: universityBloc,
-            courseBloc: courseBloc,
-            attendacneRepo: attendanceRepo,
-          );
+          await Future.value()
+              .then((value) => pd.show())
+              .then((value) => getInfoForAttendance(
+                    context: context,
+                    rest: rest,
+                    universitiesBloc: universityBloc,
+                    courseBloc: courseBloc,
+                    attendacneRepo: attendanceRepo,
+                  ))
+              .then((value) => pd.hide());
         },
         background: DecoratedBox(
           position: DecorationPosition.background,

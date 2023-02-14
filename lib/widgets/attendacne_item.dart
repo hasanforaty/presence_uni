@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:presence_absence/consts/Colors.dart';
+import 'package:presence_absence/models/attendacne.dart';
 import 'package:presence_absence/widgets/class_number_widget.dart';
 
 class AttendanceItem extends StatelessWidget {
@@ -7,6 +9,7 @@ class AttendanceItem extends StatelessWidget {
   final String className;
   final String uniName;
   final void Function() onClicked;
+  final AttendanceStatus status;
   const AttendanceItem({
     Key? key,
     required this.attendanceNumber,
@@ -14,6 +17,7 @@ class AttendanceItem extends StatelessWidget {
     required this.teacherName,
     required this.className,
     required this.uniName,
+    required this.status,
   }) : super(key: key);
 
   @override
@@ -23,16 +27,16 @@ class AttendanceItem extends StatelessWidget {
       child: GestureDetector(
         onTap: onClicked,
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Color(0xff8360c3), Color(0xff2ebf91)],
+                colors: getAttendanceColor(status),
               ),
-              borderRadius: BorderRadius.all(
+              borderRadius: const BorderRadius.all(
                 Radius.circular(16),
               ),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   offset: Offset(2, 10),
                   color: Colors.black87,

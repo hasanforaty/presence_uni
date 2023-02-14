@@ -37,7 +37,7 @@ abstract class RestClient {
   @GET(sessionURL)
   Future<BaseResponse<SessionsDAO>> getSessions();
 
-  @POST("$sessionURL/{session_id}")
+  @PUT("$sessionURL/{session_id}")
   Future<void> updateSessions(
       @Path() int session_id, @Body() Map<String, dynamic> map);
 

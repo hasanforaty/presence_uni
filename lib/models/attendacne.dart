@@ -1,18 +1,22 @@
 class Attendance {
+  final AttendanceStatus status;
   final String classNumber;
   final String teacherName;
   final String className;
   final String uniName;
   final int sessionId;
   final String numberOfStudent;
-  const Attendance(
-      {required this.className,
-      required this.classNumber,
-      required this.teacherName,
-      required this.uniName,
-      required this.numberOfStudent,
-      required this.sessionId})
-      : super();
+  final String? comment;
+  const Attendance({
+    required this.className,
+    required this.classNumber,
+    required this.teacherName,
+    required this.uniName,
+    required this.numberOfStudent,
+    required this.sessionId,
+    required this.status,
+    this.comment,
+  }) : super();
   Attendance.def(
     String? classNu,
   ) : this(
@@ -21,7 +25,8 @@ class Attendance {
             className: "مهارت های زندگی",
             uniName: "دانشکده مهارت",
             sessionId: 10,
-            numberOfStudent: "25");
+            numberOfStudent: "25",
+            status: AttendanceStatus.unDecided);
 
   static int Function(Attendance, Attendance) sort(
       SortAttendance sortAttendance) {
@@ -41,6 +46,8 @@ class Attendance {
     }
   }
 }
+
+enum AttendanceStatus { absent, present, unDecided }
 
 enum SortAttendance {
   sortByNumber,

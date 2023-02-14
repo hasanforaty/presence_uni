@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presence_absence/bloc/attendacne_filter_bloc.dart';
+import 'package:presence_absence/bloc/universities_bloc.dart';
+import 'package:presence_absence/models/dao/university_dao.dart';
 import 'package:presence_absence/models/university.dart';
 
 Future showFilter(BuildContext context) => showDialog(
@@ -15,7 +17,7 @@ class FilterDialog extends StatefulWidget {
 }
 
 class _FilterDialogState extends State<FilterDialog> {
-  List<University> universityFilterSelected = [];
+  List<UniversityDao> universityFilterSelected = [];
   @override
   void initState() {
     // TODO: implement initState
@@ -62,47 +64,51 @@ class _FilterDialogState extends State<FilterDialog> {
         width: MediaQuery.of(context).size.width - 60,
         child: Directionality(
           textDirection: TextDirection.rtl,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //دانشکده ها
-              Text(
-                "دانشکده :",
-                style: Theme.of(context)
-                    .textTheme
-                    .labelLarge
-                    ?.copyWith(decoration: TextDecoration.underline),
-              ),
-              SizedBox(
-                height: 60,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    var item = universityList[index];
-                    return FilterChip(
-                      label: Text(item.name),
-                      onSelected: (isSelected) {
-                        setState(() {
-                          if (isSelected) {
-                            universityFilterSelected.add(item);
-                          } else {
-                            universityFilterSelected.remove(item);
-                          }
-                        });
+          child: BlocBuilder<UniversitiesBloc, List<UniversityDao>>(
+            builder: (_, items) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //دانشکده ها
+                  Text(
+                    "دانشکده :",
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelLarge
+                        ?.copyWith(decoration: TextDecoration.underline),
+                  ),
+                  SizedBox(
+                    height: 60,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        var item = items[index];
+                        return FilterChip(
+                          label: Text(item.name),
+                          onSelected: (isSelected) {
+                            setState(() {
+                              if (isSelected) {
+                                universityFilterSelected.add(item);
+                              } else {
+                                universityFilterSelected.remove(item);
+                              }
+                            });
+                          },
+                          selected: universityFilterSelected.contains(item),
+                        );
                       },
-                      selected: universityFilterSelected.contains(item),
-                    );
-                  },
-                  itemCount: universityList.length,
-                ),
-              ),
-              for (var selected in universityFilterSelected)
-                Text(
-                  selected.name,
-                  style: miniTextTheme,
-                ),
-            ],
+                      itemCount: items.length,
+                    ),
+                  ),
+                  for (var selected in universityFilterSelected)
+                    Text(
+                      selected.name,
+                      style: miniTextTheme,
+                    ),
+                ],
+              );
+            },
           ),
         ),
       ),
