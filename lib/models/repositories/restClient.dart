@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:presence_absence/consts/url_const.dart';
 import 'package:presence_absence/models/dao/course_dao.dart';
 import 'package:presence_absence/models/dao/location_dao.dart';
@@ -34,12 +36,10 @@ abstract class RestClient {
 
   @GET(sessionURL)
   Future<BaseResponse<SessionsDAO>> getSessions();
-  // @POST(sessionURL)
-  // Future<void> updateSessions(
-  //     {@Part(name: "id") String id,
-  //     @Part(name: "course_id") String courseID,
-  //     @Part(name: "status") String status,
-  //     @Part(name: "comment") String comment});
+
+  @POST("$sessionURL/{session_id}")
+  Future<void> updateSessions(
+      @Path() int session_id, @Body() Map<String, dynamic> map);
 
   @POST(loginURL)
   Future<BaseResponse<UserDao>> login(@Part(name: "email") userName,
@@ -50,4 +50,6 @@ abstract class RestClient {
   Future<BaseResponse<TeachersDao>> getTeachers();
   @GET(locationURL)
   Future<BaseResponse<LocationsDao>> getLocations();
+  @POST(uploadURL)
+  Future<void> uploadFile(@Part() File file);
 }

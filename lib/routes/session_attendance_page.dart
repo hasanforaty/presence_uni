@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presence_absence/bloc/selected_attendance_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
+import 'package:presence_absence/consts/retrofit_utils.dart';
 import 'package:presence_absence/models/attendacne.dart';
+import 'package:presence_absence/models/providers/retrofit_provider.dart';
 
 import 'package:presence_absence/widgets/class_number_widget.dart';
 
@@ -20,7 +22,6 @@ class _SessionPageState extends State<SessionPage> {
   late TextEditingController textController;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     textController = TextEditingController();
   }
@@ -33,6 +34,7 @@ class _SessionPageState extends State<SessionPage> {
 
   @override
   Widget build(BuildContext context) {
+    var rest = context.read<RetrofitProvider>().state;
     return Scaffold(
       backgroundColor: kLogInBackGround,
       body: SafeArea(
@@ -67,8 +69,12 @@ class _SessionPageState extends State<SessionPage> {
                     ),
                     _SessionBottom(
                       onClicked: (isAttended) {
-                        //TODO check for Text Controller
-                        //TODO send respond to Server
+                        sendSessionUpdate(
+                            context: context,
+                            rest: rest,
+                            present: isAttended,
+                            comment: textController.value.text,
+                            sessionId: item.sessionId);
                       },
                     ),
                   ],

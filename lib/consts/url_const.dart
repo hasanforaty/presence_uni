@@ -4,4 +4,5 @@ const university = "/api/universities";
 const String basicUrl = "http://206.189.14.198";
 const teacherURL = "/api/teachers/";
 const locationURL = "/api/locations/";
-const sessionURL = "/api/sessions/";
+const sessionURL = "/api/sessions";
+const uploadURL = "/api/upload";

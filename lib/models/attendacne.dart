@@ -3,7 +3,7 @@ class Attendance {
   final String teacherName;
   final String className;
   final String uniName;
-  final String sessionId;
+  final int sessionId;
   final String numberOfStudent;
   const Attendance(
       {required this.className,
@@ -20,7 +20,7 @@ class Attendance {
             teacherName: "کارگر",
             className: "مهارت های زندگی",
             uniName: "دانشکده مهارت",
-            sessionId: "10",
+            sessionId: 10,
             numberOfStudent: "25");
 
   static int Function(Attendance, Attendance) sort(

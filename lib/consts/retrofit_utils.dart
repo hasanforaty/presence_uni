@@ -81,7 +81,7 @@ Future getInfoForAttendance({
           className: course.name,
           teacherName: "${teacher.name} ${teacher.last_name}",
           uniName: uni.name,
-          sessionId: se.id.toString(),
+          sessionId: se.id,
           numberOfStudent: course.students_count.toString(),
           classNumber: location.class_number.toString());
     }).toList();
@@ -90,6 +90,43 @@ Future getInfoForAttendance({
   } on Exception catch (e) {
     print(e);
   }
+
+  return Future.value();
+}
+
+Future sendSessionUpdate({
+  required BuildContext context,
+  required RestClient rest,
+  required bool present,
+  required String comment,
+  required int sessionId,
+}) async {
+  try {
+    var commentKey = "comment";
+    var statusKey = "status";
+    await rest.updateSessions(sessionId,
+        {commentKey: comment, statusKey: present ? "able" : "disable"});
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text(
+        "تغیرات اعمال شد",
+        textDirection: TextDirection.rtl,
+      ),
+      duration: Duration(seconds: 3),
+    ));
+    await Future.delayed(const Duration(seconds: 3));
+  } catch (e) {
+    print(e);
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text(
+        "تغیرات اعمال نشد",
+        textDirection: TextDirection.rtl,
+      ),
+      duration: Duration(seconds: 3),
+    ));
+    await Future.delayed(const Duration(seconds: 3));
+  }
+
+  Navigator.of(context).pop();
 
   return Future.value();
 }
