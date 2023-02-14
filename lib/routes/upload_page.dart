@@ -2,14 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 
 import '../consts/Colors.dart';
+import '../models/providers/retrofit_provider.dart';
 
 class UploadPage extends StatelessWidget {
   const UploadPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var rest = context.read<RetrofitProvider>().state;
+    ProgressDialog pd = ProgressDialog(context);
     return Container(
       padding: const EdgeInsets.all(18),
       color: kLogInBackGround,
@@ -36,6 +41,10 @@ class UploadPage extends StatelessWidget {
                   showGoUp: true,
                 );
                 print(path);
+                pd.show();
+                var file = File(path!);
+                await rest.uploadFile(file);
+                pd.hide();
               },
             ),
             Text(
