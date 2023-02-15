@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:presence_absence/consts/retrofit_utils.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 
 import '../consts/Colors.dart';
@@ -32,7 +33,6 @@ class UploadPage extends StatelessWidget {
                   rootDirectory: Directory.current,
                   fsType: FilesystemType.file,
                   allowedExtensions: [
-                    '.jpg',
                     '.xlsx',
                     '.xlsm',
                     '.xlsb',
@@ -42,8 +42,7 @@ class UploadPage extends StatelessWidget {
                 );
                 print(path);
                 pd.show();
-                var file = File(path!);
-                await rest.uploadFile(file);
+                await updateFile(context: context, rest: rest, path: path!);
                 pd.hide();
               },
             ),

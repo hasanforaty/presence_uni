@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -153,6 +155,20 @@ Future sendSessionUpdate({
   }
 
   Navigator.of(context).pop();
+
+  return Future.value();
+}
+
+Future updateFile(
+    {required BuildContext context,
+    required RestClient rest,
+    required String path}) async {
+  try {
+    File file = File(path);
+    await rest.uploadFile(file);
+  } on Exception catch (e) {
+    print(e);
+  }
 
   return Future.value();
 }
