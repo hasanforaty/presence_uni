@@ -4,14 +4,14 @@ part 'session_dao.g.dart';
 
 @JsonSerializable()
 class SessionDAO {
-  int id;
+  int? id;
   int course_id;
   int location_id;
   String? status;
   String? comment;
 
   SessionDAO({
-    required this.id,
+    this.id,
     required this.course_id,
     required this.location_id,
     required this.status,

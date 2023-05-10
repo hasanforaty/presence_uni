@@ -41,6 +41,9 @@ abstract class RestClient {
   Future<void> updateSessions(
       @Path() int session_id, @Body() Map<String, dynamic> map);
 
+  @POST("$sessionURL/")
+  Future<void> createSession(@Body() Map<String, dynamic> map);
+
   @POST(loginURL)
   Future<BaseResponse<UserDao>> login(@Part(name: "email") userName,
       @Part(name: "password") password, @Header("Content-Type") String header);

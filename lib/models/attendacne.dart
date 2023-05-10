@@ -4,9 +4,11 @@ class Attendance {
   final String teacherName;
   final String className;
   final String uniName;
-  final int sessionId;
+  final int? sessionId;
   final String numberOfStudent;
   final String? comment;
+  final int courseId;
+  final int locaitonId;
   const Attendance({
     required this.className,
     required this.classNumber,
@@ -15,6 +17,8 @@ class Attendance {
     required this.numberOfStudent,
     required this.sessionId,
     required this.status,
+    required this.courseId,
+    required this.locaitonId,
     this.comment,
   }) : super();
   Attendance.def(
@@ -26,7 +30,9 @@ class Attendance {
             uniName: "دانشکده مهارت",
             sessionId: 10,
             numberOfStudent: "25",
-            status: AttendanceStatus.unDecided);
+            status: AttendanceStatus.unDecided,
+            locaitonId: 0,
+            courseId: 0);
 
   static int Function(Attendance, Attendance) sort(
       SortAttendance sortAttendance) {

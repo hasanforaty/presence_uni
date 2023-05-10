@@ -77,7 +77,7 @@ class _SessionPageState extends State<SessionPage> {
                             rest: rest,
                             present: isAttended,
                             comment: textController.value.text,
-                            sessionId: item.sessionId);
+                            sessionId: item.sessionId,attendance: item);
                       },
                     ),
                   ],

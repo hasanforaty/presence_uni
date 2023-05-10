@@ -4,14 +4,16 @@ part 'teacher_dao.g.dart';
 
 @JsonSerializable()
 class TeacherDao {
-  int id;
+  int? id;
   String name;
-  String last_name;
+  String? last_name;
+  int? national_code;
 
   TeacherDao({
     required this.id,
     required this.name,
     required this.last_name,
+    required this.national_code,
   });
   Map<String, dynamic> toJson() => _$TeacherDaoToJson(this);
   factory TeacherDao.fromJson(Map<String, dynamic> json) =>

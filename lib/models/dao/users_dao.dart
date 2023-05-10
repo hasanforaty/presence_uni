@@ -16,7 +16,7 @@ class UserDao {
       id: user.id,
       username: user.username,
       auth: token,
-      role: user.role == "controller" ? Role.others : Role.admin);
+      role: user.role == "controller" ? Role.admin : Role.admin);
   factory UserDao.fromJson(Map<String, dynamic> json) =>
       _$UserDaoFromJson(json);
   Map<String, dynamic> toJson() => _$UserDaoToJson(this);

@@ -5,7 +5,7 @@ part 'course_dao.g.dart';
 @JsonSerializable()
 class CourseDAO {
   int id;
-  int teacher_id;
+  int? teacher_id;
   int course_id;
   int location_id;
   String name;

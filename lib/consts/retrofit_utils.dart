@@ -6,6 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presence_absence/bloc/attendances_bloc.dart';
 import 'package:presence_absence/consts/consts.dart';
 import 'package:presence_absence/consts/url_const.dart';
+import 'package:presence_absence/models/dao/course_dao.dart';
+import 'package:presence_absence/models/dao/session_dao.dart';
+import 'package:presence_absence/models/dao/teacher_dao.dart';
 import 'package:presence_absence/models/repositories/restClient.dart';
 
 import '../bloc/course_bloc.dart';
@@ -66,37 +69,52 @@ Future getInfoForAttendance({
     var courses = await rest.getCourses();
 
     courseBloc.newCourses(courses.data!.data);
-    var session = await rest.getSessions();
+    var session = (await rest.getSessions()).data!.data.toList();
     var teachers = await rest.getTeachers();
     var locations = await rest.getLocations();
-    var attendanceList = session.data?.data.map((se) {
-      var course = courses.data!.data
-          .firstWhere((element) => element.id == se.course_id);
-
-      var teacher = teachers.data!.data
-          .firstWhere((element) => element.id == course.teacher_id);
-      var location = locations.data!.data
+    //create new temporary session base on classes
+    for (var cours in courses.data!.data) {
+      var se = session.where((element) => element.course_id == cours.course_id);
+      if (se.isEmpty) {
+        session.add(SessionDAO(
+            course_id: cours.course_id,
+            location_id: cours.location_id,
+            status: null,
+            comment: null));
+      }
+    }
+    var attendanceList = session.map((se) {
+      var course = courses.data!.data.firstWhere((element) {
+        return element.id == se.course_id;
+      });
+      var teacher = course.teacher_id == null
+          ? TeacherDao(id: 0, name: "نامشخص", last_name: "", national_code: 0)
+          : teachers.data!.data
+              .firstWhere((element) => element.id == course.teacher_id);
+      var location = locations.data?.data
           .firstWhere((element) => element.id == course.location_id);
       var uni = list.data!.data
-          .firstWhere((element) => element.id == location.university_id);
+          .firstWhere((element) => element.id == location?.university_id);
       AttendanceStatus status = AttendanceStatus.unDecided;
       if (se.status == null) status = AttendanceStatus.unDecided;
       if ((se.status ?? "") == "absent") status = AttendanceStatus.absent;
       if ((se.status ?? "") == "present") status = AttendanceStatus.present;
+
       return Attendance(
-        className: course.name,
-        teacherName: "${teacher.name} ${teacher.last_name}",
-        uniName: uni.name,
-        sessionId: se.id,
-        numberOfStudent: course.students_count.toString(),
-        classNumber: location.class_number.toString(),
-        status: status,
-        comment: se.comment,
-      );
+          className: course.name,
+          teacherName: "${teacher.name} ${teacher.last_name}",
+          uniName: uni.name,
+          sessionId: se.id,
+          numberOfStudent: course.students_count.toString(),
+          classNumber: location?.class_number.toString() ?? "",
+          status: status,
+          comment: se.comment,
+          locaitonId: se.location_id,
+          courseId: se.course_id);
     }).toList();
 
     attendacneRepo.replace(attendanceList!);
-  } on Exception catch (e) {
+  } catch (e) {
     print(e);
     if (e is DioError) {
       return Future.value();
@@ -117,6 +135,8 @@ Future getInfoForAttendance({
         backgroundColor: Colors.red,
       ),
     );
+    await Future.delayed(const Duration(seconds: 2));
+    return Future.value();
   }
 
   return Future.value();
@@ -127,13 +147,23 @@ Future sendSessionUpdate({
   required RestClient rest,
   required bool present,
   required String comment,
-  required int sessionId,
+  required int? sessionId,
+  required Attendance attendance,
 }) async {
   try {
     var commentKey = "comment";
     var statusKey = "status";
-    await rest.updateSessions(sessionId,
-        {commentKey: comment, statusKey: present ? "present" : "absent"});
+    if (sessionId == null) {
+      await rest.createSession({
+        commentKey: comment,
+        statusKey: present ? "present" : "absent",
+        "location_id": attendance.locaitonId.toString(),
+        "course_id": attendance.courseId.toString()
+      });
+    } else {
+      await rest.updateSessions(sessionId,
+          {commentKey: comment, statusKey: present ? "present" : "absent"});
+    }
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text(
         "تغیرات اعمال شد",
