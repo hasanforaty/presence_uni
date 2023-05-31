@@ -13,7 +13,7 @@ import 'bloc/attendacne_filter_bloc.dart';
 import 'bloc/attendances_bloc.dart';
 import 'bloc/course_bloc.dart';
 import 'bloc/universities_bloc.dart';
-import 'bloc/users_bloc.dart';
+import 'bloc/user_bloc.dart';
 
 void main() {
   runApp(const MyApp());

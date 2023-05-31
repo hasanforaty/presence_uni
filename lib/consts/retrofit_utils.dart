@@ -4,16 +4,18 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:presence_absence/bloc/attendances_bloc.dart';
+import 'package:presence_absence/bloc/users_bloc.dart';
 import 'package:presence_absence/consts/consts.dart';
 import 'package:presence_absence/consts/url_const.dart';
-import 'package:presence_absence/models/dao/course_dao.dart';
+import 'package:presence_absence/models/dao/location_dao.dart';
 import 'package:presence_absence/models/dao/session_dao.dart';
 import 'package:presence_absence/models/dao/teacher_dao.dart';
+import 'package:presence_absence/models/dao/university_dao.dart';
 import 'package:presence_absence/models/repositories/restClient.dart';
 
 import '../bloc/course_bloc.dart';
 import '../bloc/universities_bloc.dart';
-import '../bloc/users_bloc.dart';
+import '../bloc/user_bloc.dart';
 import '../models/attendacne.dart';
 import '../models/providers/retrofit_provider.dart';
 import '../models/roles.dart';
@@ -83,24 +85,33 @@ Future getInfoForAttendance({
             comment: null));
       }
     }
-    var attendanceList = session.map((se) {
+    var attendanceList = <Attendance>[];
+    for (var se in session) {
+      print(se.toJson());
       var course = courses.data!.data.firstWhere((element) {
-        return element.id == se.course_id;
+        return element.course_id == se.course_id;
       });
+
       var teacher = course.teacher_id == null
           ? TeacherDao(id: 0, name: "نامشخص", last_name: "", national_code: 0)
-          : teachers.data!.data
-              .firstWhere((element) => element.id == course.teacher_id);
-      var location = locations.data?.data
-          .firstWhere((element) => element.id == course.location_id);
-      var uni = list.data!.data
-          .firstWhere((element) => element.id == location?.university_id);
+          : teachers.data!.data.firstWhere(
+              (element) => element.id == course.teacher_id,
+              orElse: () => TeacherDao(
+                  id: 0, name: "نامشخص", last_name: "", national_code: 0));
+
+      var location = locations.data?.data.firstWhere(
+          (element) => element.id == course.location_id,
+          orElse: () => LocationDao(
+              id: -1, university_id: -1, class_number: -1, floor: -1));
+
+      var uni = list.data!.data.firstWhere(
+          (element) => element.id == location?.university_id,
+          orElse: () => UniversityDao(id: -1, name: 'نامشخص'));
       AttendanceStatus status = AttendanceStatus.unDecided;
       if (se.status == null) status = AttendanceStatus.unDecided;
       if ((se.status ?? "") == "absent") status = AttendanceStatus.absent;
       if ((se.status ?? "") == "present") status = AttendanceStatus.present;
-
-      return Attendance(
+      var attendance = Attendance(
           className: course.name,
           teacherName: "${teacher.name} ${teacher.last_name}",
           uniName: uni.name,
@@ -111,9 +122,11 @@ Future getInfoForAttendance({
           comment: se.comment,
           locaitonId: se.location_id,
           courseId: se.course_id);
-    }).toList();
-
-    attendacneRepo.replace(attendanceList!);
+      attendanceList.add(attendance);
+      print("attendance is added");
+    }
+    print("we are out");
+    attendacneRepo.replace(attendanceList);
   } catch (e) {
     print(e);
     if (e is DioError) {
@@ -200,5 +213,13 @@ Future updateFile(
     print(e);
   }
 
+  return Future.value();
+}
+
+Future getUsers(
+    {required BuildContext context, required RestClient rest}) async {
+  var usersBloc = context.read<UsersBloc>();
+  var usersData = await rest.getUsers();
+  usersBloc.change(usersData.data);
   return Future.value();
 }

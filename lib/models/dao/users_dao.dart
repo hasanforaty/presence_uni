@@ -40,3 +40,13 @@ class UserDaoData {
       _$UserDaoDataFromJson(json);
   Map<String, dynamic> toJson() => _$UserDaoDataToJson(this);
 }
+
+@JsonSerializable()
+class UsersDao {
+  List<UserDaoData> data;
+
+  UsersDao(this.data);
+  factory UsersDao.fromJson(Map<String, dynamic> json) =>
+      _$UsersDaoFromJson(json);
+  Map<String, dynamic> toJson() => _$UsersDaoToJson(this);
+}

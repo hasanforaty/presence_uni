@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_zoom_drawer/config.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
-import 'package:presence_absence/bloc/users_bloc.dart';
+import 'package:presence_absence/bloc/user_bloc.dart';
 import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/models/users.dart';
 import 'package:presence_absence/routes.dart';
@@ -10,8 +10,15 @@ import 'package:presence_absence/widgets/drawer_item.dart';
 
 import '../models/providers/drawer_controller_bloc.dart';
 
-class PortalPage extends StatelessWidget {
+class PortalPage extends StatefulWidget {
   const PortalPage({Key? key}) : super(key: key);
+
+  @override
+  State<PortalPage> createState() => _PortalPageState();
+}
+
+class _PortalPageState extends State<PortalPage> {
+  var userVisible = false;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DrawerControllerBloc, ZoomDrawerController>(
@@ -83,6 +90,39 @@ class PortalPage extends StatelessWidget {
                           iconData: Icons.bar_chart,
                           name: "نمودار ها (درحال توسعه)",
                           isActive: false,
+                        ),
+                        DrawerItem(
+                          onPressed: () {
+                            setState(() {
+                              userVisible = !userVisible;
+                            });
+                          },
+                          iconData: Icons.supervised_user_circle,
+                          name: "مدیریت کاربری",
+                          isActive: true,
+                        ),
+                        Visibility(
+                          visible: userVisible,
+                          child: DrawerItem(
+                            onPressed: () {
+                              RouteGenerator.goTo(Routes.users);
+                            },
+                            iconData: Icons.person,
+                            name: "کاربران",
+                            padding: const EdgeInsets.only(
+                                top: 4, left: 8, right: 16),
+                          ),
+                        ),
+                        Visibility(
+                          visible: userVisible,
+                          child: DrawerItem(
+                              onPressed: () {
+                                //TODO
+                              },
+                              iconData: Icons.person_add,
+                              padding: const EdgeInsets.only(
+                                  top: 4, left: 8, right: 16),
+                              name: "ثبت نام کاربر جدید"),
                         ),
                         Expanded(child: Container()),
                         DrawerItem(

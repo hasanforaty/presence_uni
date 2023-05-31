@@ -1,12 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:presence_absence/models/users.dart';
-import 'package:presence_absence/routes.dart';
+import 'package:presence_absence/models/dao/users_dao.dart';
 
-class UserBloc extends Cubit<Users> {
-  UserBloc() : super(Users.def());
-  void changeUsers(Users newUser) => emit(newUser);
-  void invalidate() {
-    emit(state.copyWith(auth: ""));
-    RouteGenerator.goTo(Routes.logIn, replace: true);
-  }
+class UsersBloc extends Cubit<List<UserDaoData>> {
+  UsersBloc() : super([]);
+  void change(List<UserDaoData> data) => emit(data);
 }

@@ -5,18 +5,20 @@ class DrawerItem extends StatelessWidget {
   final IconData iconData;
   final String name;
   final bool isActive;
+  final EdgeInsets padding;
   const DrawerItem(
       {Key? key,
       required this.onPressed,
       required this.iconData,
       required this.name,
+      this.padding = const EdgeInsets.only(top: 8),
       this.isActive = true})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8),
+      padding: padding,
       child: ElevatedButton(
           onPressed: isActive ? onPressed : null,
           style: ElevatedButton.styleFrom(

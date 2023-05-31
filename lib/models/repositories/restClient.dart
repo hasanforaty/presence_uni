@@ -55,4 +55,7 @@ abstract class RestClient {
   Future<BaseResponse<LocationsDao>> getLocations();
   @POST(uploadURL)
   Future<void> uploadFile(@Part() File file);
+
+  @GET(usersURL)
+  Future<UsersDao> getUsers();
 }
