@@ -75,9 +75,11 @@ class _SessionPageState extends State<SessionPage> {
                         sendSessionUpdate(
                             context: context,
                             rest: rest,
+                            times: item.times,
                             present: isAttended,
                             comment: textController.value.text,
-                            sessionId: item.sessionId,attendance: item);
+                            sessionId: item.sessionId,
+                            attendance: item);
                       },
                     ),
                   ],

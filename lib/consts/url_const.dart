@@ -6,4 +6,4 @@ const teacherURL = "/api/teachers/";
 const locationURL = "/api/locations/";
 const sessionURL = "/api/sessions";
 const uploadURL = "/api/upload";
-const usersURL = "/api/users";
+const usersURL = "/api/users/";

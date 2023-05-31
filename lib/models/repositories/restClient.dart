@@ -41,7 +41,7 @@ abstract class RestClient {
   Future<void> updateSessions(
       @Path() int session_id, @Body() Map<String, dynamic> map);
 
-  @POST("$sessionURL/")
+  @POST("$sessionURL")
   Future<void> createSession(@Body() Map<String, dynamic> map);
 
   @POST(loginURL)
@@ -57,5 +57,5 @@ abstract class RestClient {
   Future<void> uploadFile(@Part() File file);
 
   @GET(usersURL)
-  Future<UsersDao> getUsers();
+  Future<BaseResponse<UsersDao>> getUsers();
 }

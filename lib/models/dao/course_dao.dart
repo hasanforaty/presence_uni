@@ -14,6 +14,7 @@ class CourseDAO {
   String group;
   String level;
   String status;
+  String times;
 
   factory CourseDAO.fromJson(Map<String, dynamic> json) =>
       _$CourseDAOFromJson(json);
@@ -30,6 +31,7 @@ class CourseDAO {
     required this.group,
     required this.level,
     required this.status,
+    required this.times,
   });
 }
 

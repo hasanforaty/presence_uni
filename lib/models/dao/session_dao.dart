@@ -9,6 +9,7 @@ class SessionDAO {
   int location_id;
   String? status;
   String? comment;
+  String time;
 
   SessionDAO({
     this.id,
@@ -16,6 +17,7 @@ class SessionDAO {
     required this.location_id,
     required this.status,
     required this.comment,
+    required this.time,
   });
 
   Map<String, dynamic> toJson() => _$SessionDAOToJson(this);

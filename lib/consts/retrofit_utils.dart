@@ -7,6 +7,7 @@ import 'package:presence_absence/bloc/attendances_bloc.dart';
 import 'package:presence_absence/bloc/users_bloc.dart';
 import 'package:presence_absence/consts/consts.dart';
 import 'package:presence_absence/consts/url_const.dart';
+import 'package:presence_absence/models/dao/course_dao.dart';
 import 'package:presence_absence/models/dao/location_dao.dart';
 import 'package:presence_absence/models/dao/session_dao.dart';
 import 'package:presence_absence/models/dao/teacher_dao.dart';
@@ -81,49 +82,53 @@ Future getInfoForAttendance({
         session.add(SessionDAO(
             course_id: cours.course_id,
             location_id: cours.location_id,
+            time: cours.times,
             status: null,
             comment: null));
       }
     }
+
     var attendanceList = <Attendance>[];
     for (var se in session) {
       print(se.toJson());
-      var course = courses.data!.data.firstWhere((element) {
-        return element.course_id == se.course_id;
-      });
+      try {
+        var course = courses.data!.data.firstWhere((element) {
+          return element.course_id == se.course_id;
+        });
+        var teacher = course.teacher_id == null
+            ? TeacherDao(id: 0, name: "نامشخص", last_name: "", national_code: 0)
+            : teachers.data!.data.firstWhere(
+                (element) => element.id == course.teacher_id,
+                orElse: () => TeacherDao(
+                    id: 0, name: "نامشخص", last_name: "", national_code: 0));
 
-      var teacher = course.teacher_id == null
-          ? TeacherDao(id: 0, name: "نامشخص", last_name: "", national_code: 0)
-          : teachers.data!.data.firstWhere(
-              (element) => element.id == course.teacher_id,
-              orElse: () => TeacherDao(
-                  id: 0, name: "نامشخص", last_name: "", national_code: 0));
+        var location = locations.data?.data.firstWhere(
+            (element) => element.id == course.location_id,
+            orElse: () => LocationDao(
+                id: -1, university_id: -1, class_number: -1, floor: -1));
 
-      var location = locations.data?.data.firstWhere(
-          (element) => element.id == course.location_id,
-          orElse: () => LocationDao(
-              id: -1, university_id: -1, class_number: -1, floor: -1));
-
-      var uni = list.data!.data.firstWhere(
-          (element) => element.id == location?.university_id,
-          orElse: () => UniversityDao(id: -1, name: 'نامشخص'));
-      AttendanceStatus status = AttendanceStatus.unDecided;
-      if (se.status == null) status = AttendanceStatus.unDecided;
-      if ((se.status ?? "") == "absent") status = AttendanceStatus.absent;
-      if ((se.status ?? "") == "present") status = AttendanceStatus.present;
-      var attendance = Attendance(
-          className: course.name,
-          teacherName: "${teacher.name} ${teacher.last_name}",
-          uniName: uni.name,
-          sessionId: se.id,
-          numberOfStudent: course.students_count.toString(),
-          classNumber: location?.class_number.toString() ?? "",
-          status: status,
-          comment: se.comment,
-          locaitonId: se.location_id,
-          courseId: se.course_id);
-      attendanceList.add(attendance);
-      print("attendance is added");
+        var uni = list.data!.data.firstWhere(
+            (element) => element.id == location?.university_id,
+            orElse: () => UniversityDao(id: -1, name: 'نامشخص'));
+        AttendanceStatus status = AttendanceStatus.unDecided;
+        if (se.status == null) status = AttendanceStatus.unDecided;
+        if ((se.status ?? "") == "absent") status = AttendanceStatus.absent;
+        if ((se.status ?? "") == "present") status = AttendanceStatus.present;
+        var attendance = Attendance(
+            className: course.name,
+            teacherName: "${teacher.name} ${teacher.last_name}",
+            uniName: uni.name,
+            sessionId: se.id,
+            numberOfStudent: course.students_count.toString(),
+            classNumber: location?.class_number.toString() ?? "",
+            status: status,
+            comment: se.comment,
+            locaitonId: se.location_id,
+            courseId: se.course_id,
+            times: se.time);
+        attendanceList.add(attendance);
+        print("attendance is added");
+      } catch (e) {}
     }
     print("we are out");
     attendacneRepo.replace(attendanceList);
@@ -162,6 +167,7 @@ Future sendSessionUpdate({
   required String comment,
   required int? sessionId,
   required Attendance attendance,
+  required String? times,
 }) async {
   try {
     var commentKey = "comment";
@@ -219,7 +225,9 @@ Future updateFile(
 Future getUsers(
     {required BuildContext context, required RestClient rest}) async {
   var usersBloc = context.read<UsersBloc>();
+  print("trying to get users");
   var usersData = await rest.getUsers();
-  usersBloc.change(usersData.data);
+  print("Got user");
+  usersBloc.change(usersData.data!.data);
   return Future.value();
 }

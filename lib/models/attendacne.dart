@@ -9,18 +9,20 @@ class Attendance {
   final String? comment;
   final int courseId;
   final int locaitonId;
-  const Attendance({
-    required this.className,
-    required this.classNumber,
-    required this.teacherName,
-    required this.uniName,
-    required this.numberOfStudent,
-    required this.sessionId,
-    required this.status,
-    required this.courseId,
-    required this.locaitonId,
-    this.comment,
-  }) : super();
+  final String times;
+  const Attendance(
+      {required this.className,
+      required this.classNumber,
+      required this.teacherName,
+      required this.uniName,
+      required this.numberOfStudent,
+      required this.sessionId,
+      required this.status,
+      required this.courseId,
+      required this.locaitonId,
+      this.comment,
+      required this.times})
+      : super();
   Attendance.def(
     String? classNu,
   ) : this(
@@ -32,7 +34,8 @@ class Attendance {
             numberOfStudent: "25",
             status: AttendanceStatus.unDecided,
             locaitonId: 0,
-            courseId: 0);
+            courseId: 0,
+            times: "0-0");
 
   static int Function(Attendance, Attendance) sort(
       SortAttendance sortAttendance) {
