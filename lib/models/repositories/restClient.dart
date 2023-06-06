@@ -58,4 +58,7 @@ abstract class RestClient {
 
   @GET(usersURL)
   Future<BaseResponse<UsersDao>> getUsers();
+  @POST("$usersURL/{user_id}")
+  Future<void> changeUser(
+      @Path() int user_id, @Body() Map<String, dynamic> map);
 }

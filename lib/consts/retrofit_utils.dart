@@ -12,7 +12,9 @@ import 'package:presence_absence/models/dao/location_dao.dart';
 import 'package:presence_absence/models/dao/session_dao.dart';
 import 'package:presence_absence/models/dao/teacher_dao.dart';
 import 'package:presence_absence/models/dao/university_dao.dart';
+import 'package:presence_absence/models/dao/users_dao.dart';
 import 'package:presence_absence/models/repositories/restClient.dart';
+import 'package:presence_absence/models/users.dart';
 
 import '../bloc/course_bloc.dart';
 import '../bloc/universities_bloc.dart';
@@ -172,12 +174,14 @@ Future sendSessionUpdate({
   try {
     var commentKey = "comment";
     var statusKey = "status";
+    var timeKey = "time";
     if (sessionId == null) {
       await rest.createSession({
         commentKey: comment,
         statusKey: present ? "present" : "absent",
         "location_id": attendance.locaitonId.toString(),
-        "course_id": attendance.courseId.toString()
+        "course_id": attendance.courseId.toString(),
+        timeKey: times
       });
     } else {
       await rest.updateSessions(sessionId,
@@ -229,5 +233,12 @@ Future getUsers(
   var usersData = await rest.getUsers();
   print("Got user");
   usersBloc.change(usersData.data!.data);
+  return Future.value();
+}
+
+Future changeUserRole(
+    {required RestClient rest, required int userId, required String role}) {
+  String roleId = "role";
+  rest.changeUser(userId, {roleId: role});
   return Future.value();
 }

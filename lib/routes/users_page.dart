@@ -53,7 +53,7 @@ class _UsersPageState extends State<UsersPage> {
                               parent: controller, curve: Curves.bounceOut);
                           return SlideTransition(
                             position: curveAnimation.drive(_offset),
-                            child: createUser(currentUser[index]),
+                            child: _UserWidget(user: currentUser[index]),
                           );
                         }),
                   );
@@ -69,7 +69,30 @@ class _UsersPageState extends State<UsersPage> {
     );
   }
 
-  Widget createUser(UserDaoData user) {
+  void fillUsers(List<UserDaoData> list) async {
+    for (var user in list) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      currentUser.add(user);
+      _listKey.currentState?.insertItem(currentUser.length - 1);
+    }
+  }
+}
+
+class _UserWidget extends StatefulWidget {
+  final UserDaoData user;
+  const _UserWidget({Key? key, required this.user}) : super(key: key);
+
+  @override
+  State<_UserWidget> createState() => _UserWidgetState();
+}
+
+class _UserWidgetState extends State<_UserWidget> {
+  bool _extended = false;
+  @override
+  Widget build(BuildContext context) {
+    var user = widget.user;
+    var kBlock = user.role == "block";
+    var rest = context.read<RetrofitProvider>().state;
     // ListTile(
     //   contentPadding: const EdgeInsets.all(25),
     //   title: Text(
@@ -89,42 +112,81 @@ class _UsersPageState extends State<UsersPage> {
     //     textDirection: TextDirection.rtl,
     //   ),
     // );
-    return Container(
-      margin: EdgeInsets.only(top: 16, left: 16, right: 16),
-      width: MediaQuery.of(context).size.width,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: kDrawerBackgroundColor,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            user.name,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: Colors.white),
-            textDirection: TextDirection.rtl,
-          ),
-          Text(
-            user.email,
-            style: Theme.of(context)
-                .textTheme
-                .titleSmall
-                ?.copyWith(color: Colors.white),
-            textDirection: TextDirection.rtl,
-          )
-        ],
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _extended = !_extended;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(top: 16, left: 16, right: 16),
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          color: kBlock ? Colors.grey : kDrawerBackgroundColor,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              user.name,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: Colors.white),
+              textDirection: TextDirection.rtl,
+            ),
+            Text(
+              user.email,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall
+                  ?.copyWith(color: Colors.white),
+              textDirection: TextDirection.rtl,
+            ),
+            Visibility(
+              visible: _extended,
+              child: const Divider(
+                height: 4,
+                thickness: 4,
+                endIndent: 8,
+                indent: 8,
+                color: Colors.grey,
+              ),
+            ),
+            Visibility(
+              visible: _extended,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    child: Text(
+                      kBlock ? "فعال کردن" : "غیر فعال کردن",
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    onTap: () {
+                      changeUserRole(
+                          rest: rest,
+                          userId: user.id,
+                          role: kBlock ? "controller" : "block");
+                    },
+                  ),
+                  // GestureDetector(
+                  //   child: Text(
+                  //     "تغییر دسترسی کاربری",
+                  //     style: Theme.of(context)
+                  //         .textTheme
+                  //         .titleSmall
+                  //         ?.copyWith(color: Colors.white),
+                  //   ),
+                  // ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
-  }
-
-  void fillUsers(List<UserDaoData> list) async {
-    for (var user in list) {
-      await Future.delayed(const Duration(milliseconds: 200));
-      currentUser.add(user);
-      _listKey.currentState?.insertItem(currentUser.length - 1);
-    }
   }
 }
