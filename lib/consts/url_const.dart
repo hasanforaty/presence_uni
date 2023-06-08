@@ -7,3 +7,4 @@ const locationURL = "/api/locations/";
 const sessionURL = "/api/sessions";
 const uploadURL = "/api/upload";
 const usersURL = "/api/users/";
+const signUpURL = "/api/register/";

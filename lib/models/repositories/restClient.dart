@@ -61,4 +61,7 @@ abstract class RestClient {
   @POST("$usersURL/{user_id}")
   Future<void> changeUser(
       @Path() int user_id, @Body() Map<String, dynamic> map);
+
+  @POST(signUpURL)
+  Future<void> signUp(@Body() Map<String, dynamic> map);
 }

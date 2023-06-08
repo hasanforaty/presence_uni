@@ -44,7 +44,7 @@ class RouteGenerator {
         }
       default:
         {
-          return MaterialPageRoute(builder: (_) => const LoginPage());
+          return MaterialPageRoute(builder: (_) => LoginPage());
         }
     }
   }

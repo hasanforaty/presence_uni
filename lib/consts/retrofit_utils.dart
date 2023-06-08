@@ -242,3 +242,24 @@ Future changeUserRole(
   rest.changeUser(userId, {roleId: role});
   return Future.value();
 }
+
+Future signUp(
+    {required RestClient rest,
+    required String username,
+    required String password,
+    required String role,
+    required name}) {
+  String roleId = "role";
+  String nameId = "name";
+  String passwordId = "password";
+  String confirmPasswordId = "confirm_password";
+  String emailId = "email";
+  rest.signUp({
+    roleId: role,
+    passwordId: password,
+    emailId: username,
+    confirmPasswordId: password,
+    nameId: name,
+  });
+  return Future.value();
+}

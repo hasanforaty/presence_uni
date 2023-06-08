@@ -7,6 +7,7 @@ import 'package:presence_absence/consts/Colors.dart';
 import 'package:presence_absence/models/users.dart';
 import 'package:presence_absence/routes.dart';
 import 'package:presence_absence/widgets/drawer_item.dart';
+import 'package:presence_absence/widgets/sign_up_dialog.dart';
 
 import '../models/providers/drawer_controller_bloc.dart';
 
@@ -117,7 +118,9 @@ class _PortalPageState extends State<PortalPage> {
                           visible: userVisible,
                           child: DrawerItem(
                               onPressed: () {
-                                //TODO
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => const SignUpDialog());
                               },
                               iconData: Icons.person_add,
                               padding: const EdgeInsets.only(

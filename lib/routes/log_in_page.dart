@@ -8,12 +8,13 @@ import 'package:presence_absence/widgets/my_passworld.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     ProgressDialog pd = ProgressDialog(context);
-    TextEditingController userNameController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
+
     return Scaffold(
       body: Container(
         color: kLogInBackGround,
